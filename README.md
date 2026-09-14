@@ -72,23 +72,6 @@ This **Frontend Web Portal** is engineered to provide a lightning-fast, highly s
 
 ---
 
-## 🖼️ Website Preview
-
-<div align="center">
-  <i>(Replace placeholders with actual live screenshots)</i><br><br>
-
-  ### 🏠 Admin Dashboard
-  <img src="https://via.placeholder.com/800x450.png?text=Admin+Dashboard" width="100%" />
-
-  ### 📅 Timetable Management
-  <img src="https://via.placeholder.com/800x450.png?text=Timetable+Scheduler" width="100%" />
-
-  ### 👥 Student Directory
-  <img src="https://via.placeholder.com/800x450.png?text=Student+Directory" width="100%" />
-</div>
-
----
-
 ## 🏗️ Frontend System Architecture
 
 ```mermaid
