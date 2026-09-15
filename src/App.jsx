@@ -40,6 +40,7 @@ import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 import LoginPage from "./pages/auth/LoginPage";
 import { Sparkles, ArrowLeft } from "lucide-react";
+import GlobalLoader from "./components/GlobalLoader";
 
 function PlaceholderModule({ title }) {
   return (
@@ -64,8 +65,10 @@ function PlaceholderModule({ title }) {
 
 export default function App() {
   return (
-    <ToastProvider>
-      <AuthProvider>
+    <>
+      <GlobalLoader />
+      <ToastProvider>
+        <AuthProvider>
         <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <Routes>
             {/* Public Routes */}
@@ -98,7 +101,7 @@ export default function App() {
                   <Route path="student/:studentId" element={<StudentAttendanceDetail />} />
                 </Route>
                 <Route path="reports" element={<AdminReportsPage />}>
-                  <Route index element={<Navigate to="dashboard" replace />} />
+                  <Route index element={<Navigate to="daily" replace />} />
                   <Route path="dashboard" element={<ReportDashboard />} />
                   <Route path="daily" element={<DailyRegisterReport />} />
                   <Route path="student" element={<StudentProfileReport />} />
@@ -133,5 +136,6 @@ export default function App() {
         </BrowserRouter>
       </AuthProvider>
     </ToastProvider>
+    </>
   );
 }

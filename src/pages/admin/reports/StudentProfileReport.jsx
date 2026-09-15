@@ -72,11 +72,7 @@ export default function StudentProfileReport() {
   const [reportData, setReportData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [analysisModalData, setAnalysisModalData] = useState(null);
-  const [fromDate, setFromDate] = useState(() => {
-    const d = new Date();
-    d.setDate(d.getDate() - 89);
-    return d.toISOString().slice(0, 10);
-  });
+  const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState(new Date().toISOString().slice(0, 10));
 
   // Directory / Filter state
@@ -94,6 +90,16 @@ export default function StudentProfileReport() {
     departmentId: "",
     batchId: "",
     section: ""
+  });
+  const [visibleColumns, setVisibleColumns] = useState({
+    name: true,
+    rollNo: true,
+    department: true,
+    batch: true,
+    section: true,
+    currentYear: true,
+    attendance: true,
+    action: true
   });
 
   useEffect(() => {
@@ -141,7 +147,7 @@ export default function StudentProfileReport() {
       const params = {
         page,
         page_size: pagination.limit,
-        query: debouncedSearch || undefined,
+        query: searchTerm || undefined,
         departmentId: filters.departmentId || undefined,
         batchId: filters.batchId || undefined,
         section: filters.section || undefined,
@@ -154,13 +160,7 @@ export default function StudentProfileReport() {
     } finally {
       setIsListLoading(false);
     }
-  }, [debouncedSearch, filters, pagination.limit]);
-
-  useEffect(() => {
-    if (!selected) {
-      fetchStudentsList(1);
-    }
-  }, [fetchStudentsList, selected]);
+  }, [searchTerm, filters, pagination.limit]);
 
   const handleFilterChange = (key, value) => {
     const updates = { ...filters };
@@ -187,10 +187,13 @@ export default function StudentProfileReport() {
       setSelected(student);
       try {
         const r = await reportsService.getStudentReport(student.id, {
-          from_date: fromDate,
-          to_date: toDate,
+          from_date: fromDate || undefined,
+          to_date: toDate || undefined,
         });
         setReportData(r.data);
+        if (r.data?.summary?.from_date) {
+          setFromDate(r.data.summary.from_date);
+        }
       } catch {
         // error
       } finally {
@@ -279,6 +282,28 @@ export default function StudentProfileReport() {
                 </select>
               </div>
             </div>
+            
+            <div className="flex flex-wrap items-center justify-between mt-4 pt-4 border-t border-slate-100 gap-4">
+              <div className="flex flex-wrap gap-4">
+                {Object.keys(visibleColumns).map(col => (
+                  <label key={col} className="flex items-center gap-1.5 text-xs font-bold text-slate-500 cursor-pointer select-none">
+                    <input 
+                      type="checkbox" 
+                      checked={visibleColumns[col]} 
+                      onChange={(e) => setVisibleColumns({...visibleColumns, [col]: e.target.checked})}
+                      className="rounded border-slate-300 text-indigo-500 focus:ring-indigo-500 w-3.5 h-3.5"
+                    />
+                    {col.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+                  </label>
+                ))}
+              </div>
+              <button 
+                onClick={() => fetchStudentsList(1)}
+                className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-sm hover:shadow transition-all whitespace-nowrap"
+              >
+                Load Students
+              </button>
+            </div>
           </div>
 
           {/* Directory List Table */}
@@ -287,20 +312,20 @@ export default function StudentProfileReport() {
               <table className="modern-table w-full text-left border-collapse">
                 <thead>
                   <tr className="bg-slate-50/50 border-b border-slate-100">
-                    <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Student Name</th>
-                    <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Roll No</th>
-                    <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Department</th>
-                    <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Batch</th>
-                    <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Section</th>
-                    <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Current Year</th>
-                    <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wide text-center">Attendance %</th>
-                    <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wide text-right">Action</th>
+                    {visibleColumns.name && <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Student Name</th>}
+                    {visibleColumns.rollNo && <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Roll No</th>}
+                    {visibleColumns.department && <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Department</th>}
+                    {visibleColumns.batch && <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Batch</th>}
+                    {visibleColumns.section && <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Section</th>}
+                    {visibleColumns.currentYear && <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Current Year</th>}
+                    {visibleColumns.attendance && <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wide text-center">Attendance %</th>}
+                    {visibleColumns.action && <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wide text-right">Action</th>}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100/50">
                   {isListLoading ? (
                     <tr>
-                      <td colSpan="7" className="px-6 py-12 text-center">
+                      <td colSpan={Object.values(visibleColumns).filter(Boolean).length} className="px-6 py-12 text-center">
                         <div className="flex flex-col items-center justify-center text-slate-400">
                           <div className="w-6 h-6 border-2 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mb-3" />
                           <span className="text-sm font-semibold">Loading students...</span>
@@ -309,31 +334,31 @@ export default function StudentProfileReport() {
                     </tr>
                   ) : studentsList.length === 0 ? (
                     <tr>
-                      <td colSpan="7" className="px-6 py-12 text-center text-slate-400 font-semibold">
+                      <td colSpan={Object.values(visibleColumns).filter(Boolean).length} className="px-6 py-12 text-center text-slate-400 font-semibold">
                         No students found matching your criteria.
                       </td>
                     </tr>
                   ) : (
                     studentsList.map((st) => (
                       <tr key={st.id} className="hover:bg-slate-50/50 transition-colors group">
-                        <td className="px-6 py-4">
+                        {visibleColumns.name && <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
                             <div className="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 font-bold border border-indigo-100 text-xs">
                               {st.name.charAt(0)}
                             </div>
                             <span className="font-bold text-slate-800 text-sm">{st.name}</span>
                           </div>
-                        </td>
-                        <td className="px-6 py-4 text-sm font-medium text-slate-600">{st.roll_no}</td>
-                        <td className="px-6 py-4 text-sm font-bold text-slate-800">{st.department_code || st.department_name}</td>
-                        <td className="px-6 py-4 text-sm font-semibold text-slate-600">
+                        </td>}
+                        {visibleColumns.rollNo && <td className="px-6 py-4 text-sm font-medium text-slate-600">{st.roll_no}</td>}
+                        {visibleColumns.department && <td className="px-6 py-4 text-sm font-bold text-slate-800">{st.department_code || st.department_name}</td>}
+                        {visibleColumns.batch && <td className="px-6 py-4 text-sm font-semibold text-slate-600">
                           {st.batch_name}
-                        </td>
-                        <td className="px-6 py-4 text-sm font-semibold text-slate-600">
+                        </td>}
+                        {visibleColumns.section && <td className="px-6 py-4 text-sm font-semibold text-slate-600">
                           {st.section}
-                        </td>
-                        <td className="px-6 py-4 text-sm text-slate-600">{st.current_year || (st.academic_year || st.batch_name)}</td>
-                        <td className="px-6 py-4 text-center">
+                        </td>}
+                        {visibleColumns.currentYear && <td className="px-6 py-4 text-sm text-slate-600">{st.current_year || (st.academic_year || st.batch_name)}</td>}
+                        {visibleColumns.attendance && <td className="px-6 py-4 text-center">
                           {st.expected_sessions > 0 ? (
                             <span className={`px-2.5 py-1 rounded-full text-xs font-black ${
                               st.attendance_percentage >= 75 ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'
@@ -343,15 +368,15 @@ export default function StudentProfileReport() {
                           ) : (
                             <span className="text-xs text-slate-400 font-medium">N/A</span>
                           )}
-                        </td>
-                        <td className="px-6 py-4 text-right">
+                        </td>}
+                        {visibleColumns.action && <td className="px-6 py-4 text-right">
                           <button
                             onClick={() => loadReport(st)}
                             className="inline-flex items-center gap-1.5 px-3 py-1.5 font-bold text-xs text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors border border-indigo-100"
                           >
                             View Report <ChevronRight className="w-3.5 h-3.5" />
                           </button>
-                        </td>
+                        </td>}
                       </tr>
                     ))
                   )}

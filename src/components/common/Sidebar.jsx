@@ -33,10 +33,8 @@ const NAV_ITEMS = [
     path: "/reports", 
     icon: BarChart3,
     subItems: [
-      { name: "Dashboard", path: "/reports/dashboard", icon: LayoutDashboard },
       { name: "Daily Register", path: "/reports/daily", icon: ClipboardList },
       { name: "Student Profile", path: "/reports/student", icon: UserCircle },
-      { name: "Trends", path: "/reports/trends", icon: TrendingUp },
       { name: "Defaulters", path: "/reports/defaulters", icon: AlertOctagon },
     ]
   },
