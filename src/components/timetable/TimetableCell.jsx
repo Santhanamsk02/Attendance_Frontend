@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Plus } from "lucide-react";
+import { Plus, Pencil } from "lucide-react";
 import { getSubjectPalette } from "../../utils/subjectColors";
 
 export default function TimetableCell({
@@ -116,8 +116,8 @@ export default function TimetableCell({
                 {/* Hover overlay */}
                 {!readOnly && (
                     <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-white/20 backdrop-blur-[1px] rounded">
-                        <span className="text-[10px] font-black text-slate-700 bg-white/90 px-2 py-0.5 rounded-full shadow">
-                            ✏ Edit
+                        <span className="text-[10px] font-black text-slate-700 bg-white/90 px-2 py-0.5 rounded-full shadow flex items-center gap-1">
+                            <Pencil className="w-2.5 h-2.5" /> Edit
                         </span>
                     </div>
                 )}

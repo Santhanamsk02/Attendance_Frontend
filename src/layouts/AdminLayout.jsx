@@ -8,7 +8,7 @@ export default function AdminLayout() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#eaf1f8] flex">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex">
       {/* Sidebar Navigation */}
       <Sidebar
         isOpen={sidebarOpen}

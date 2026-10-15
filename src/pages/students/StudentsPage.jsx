@@ -5,6 +5,7 @@ import {
   Search,
   X,
   RefreshCw,
+  Trash2,
 } from "lucide-react";
 import StudentTable from "../../components/students/StudentTable";
 import StudentFilters from "../../components/students/StudentFilters";
@@ -54,6 +55,7 @@ export default function StudentsPage() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [studentToDelete, setStudentToDelete] = useState(null);
   const [isBulkDeleteDialogOpen, setIsBulkDeleteDialogOpen] = useState(false);
+  const [isDeleteAllOpen, setIsDeleteAllOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -223,6 +225,21 @@ export default function StudentsPage() {
     }
   };
 
+  const handleConfirmDeleteAll = async () => {
+    try {
+      setIsDeleting(true);
+      const res = await studentService.deleteAll();
+      toast.success(res.message || `Deleted all ${res.deleted_count} student(s) successfully.`);
+      setIsDeleteAllOpen(false);
+      setSelectedIds([]);
+      fetchStudents(1);
+    } catch (err) {
+      toast.error(err.message || "Failed to delete all students.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <div className="space-y-6 pb-20">
       {/* Header Section */}
@@ -236,17 +253,26 @@ export default function StudentsPage() {
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <button
+            onClick={() => setIsDeleteAllOpen(true)}
+            disabled={pagination.total === 0 || isLoading}
+            className="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-semibold text-rose-600 hover:text-rose-700 bg-rose-50/70 hover:bg-rose-100/80 rounded-xl transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed border border-rose-200/60 shadow-2xs"
+            title="Delete all students"
+          >
+            <Trash2 className="w-4 h-4 text-rose-500" />
+            Delete All
+          </button>
           <button
             onClick={() => setIsImportModalOpen(true)}
-            className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-slate-700 neu-btn rounded-2xl"
+            className="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl shadow-2xs transition-all duration-150"
           >
-            <Upload className="w-4 h-4 text-sky-600" />
+            <Upload className="w-4 h-4 text-slate-500" />
             Import Students
           </button>
           <button
             onClick={handleOpenAdd}
-            className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold neu-btn-primary rounded-2xl"
+            className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 rounded-xl shadow-xs transition-all duration-150"
           >
             <Plus className="w-4 h-4" />
             Add Student
@@ -256,20 +282,20 @@ export default function StudentsPage() {
 
       {/* Search & Actions Bar */}
       <div className="flex flex-col sm:flex-row items-center gap-3">
-        {/* Neumorphic Inset Search Bar */}
+        {/* Crisp Search Bar */}
         <div className="relative flex-1 w-full">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-sky-600" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search by 12-char Roll Number (e.g. 2023PECIT410), Student Name, or Email..."
-            className="w-full pl-11 pr-10 py-3 rounded-2xl neu-input text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none"
+            className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-200 bg-white text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 shadow-2xs transition-all duration-150"
           />
           {searchTerm && (
             <button
               onClick={() => setSearchTerm("")}
-              className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-200/50"
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -280,10 +306,10 @@ export default function StudentsPage() {
         <button
           onClick={() => fetchStudents(pagination.page)}
           disabled={isLoading}
-          className="p-3 rounded-2xl neu-btn text-slate-600 hover:text-sky-600 disabled:opacity-50"
+          className="p-2.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 hover:text-slate-900 disabled:opacity-50 shadow-2xs transition-all duration-150"
           title="Refresh Directory"
         >
-          <RefreshCw className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} />
+          <RefreshCw className={`w-4 h-4 ${isLoading ? "animate-spin text-indigo-600" : ""}`} />
         </button>
       </div>
 
@@ -368,6 +394,18 @@ export default function StudentsPage() {
         title="Bulk Delete Students"
         message={`Are you sure you want to permanently delete all ${selectedIds.length} selected student(s)? This action will remove their records from the attendance registry.`}
         confirmText={`Delete ${selectedIds.length} Students`}
+        isLoading={isDeleting}
+        variant="danger"
+      />
+
+      {/* Delete All Students Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={isDeleteAllOpen}
+        onClose={() => setIsDeleteAllOpen(false)}
+        onConfirm={handleConfirmDeleteAll}
+        title="Delete All Students"
+        message={`Are you sure you want to permanently delete ALL ${pagination.total} student record(s)? This action cannot be undone and will delete all associated attendance marks and enrollment history.`}
+        confirmText={`Delete All (${pagination.total}) Students`}
         isLoading={isDeleting}
         variant="danger"
       />

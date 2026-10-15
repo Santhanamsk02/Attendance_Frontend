@@ -35,18 +35,18 @@ export default function Pagination({
   };
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-7 py-5 border-t border-slate-100 bg-[#f8fbfe] rounded-b-3xl">
-      <div className="text-xs sm:text-sm text-slate-500 font-medium">
-        Showing <span className="font-bold text-slate-800">{start}</span> to{" "}
-        <span className="font-bold text-slate-800">{end}</span> of{" "}
-        <span className="font-bold text-slate-800">{totalItems}</span> {itemName}
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-5 py-3.5 border-t border-slate-200/80 bg-white">
+      <div className="text-xs text-slate-500 font-medium">
+        Showing <span className="font-semibold text-slate-900">{start}</span> to{" "}
+        <span className="font-semibold text-slate-900">{end}</span> of{" "}
+        <span className="font-semibold text-slate-900">{totalItems}</span> {itemName}
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5">
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage <= 1 || isLoading}
-          className="flex items-center justify-center p-2 rounded-xl neu-btn text-slate-600 hover:text-sky-600 disabled:opacity-40"
+          className="flex items-center justify-center p-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 hover:text-slate-900 disabled:opacity-40 transition-colors shadow-2xs"
           title="Previous Page"
         >
           <ChevronLeft className="w-4 h-4" />
@@ -62,10 +62,11 @@ export default function Pagination({
               key={page}
               onClick={() => onPageChange(page)}
               disabled={isLoading}
-              className={`min-w-[34px] h-8.5 px-3 py-2 rounded-xl text-xs font-bold transition-all ${currentPage === page
-                  ? "neu-btn-primary"
-                  : "neu-btn text-slate-600 hover:text-sky-600"
-                }`}
+              className={`min-w-[32px] h-8 px-2.5 rounded-lg text-xs font-semibold transition-colors ${
+                currentPage === page
+                  ? "bg-indigo-600 text-white shadow-xs"
+                  : "border border-slate-200 hover:bg-slate-50 text-slate-700 shadow-2xs"
+              }`}
             >
               {page}
             </button>
@@ -75,7 +76,7 @@ export default function Pagination({
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage >= totalPages || isLoading}
-          className="flex items-center justify-center p-2 rounded-xl neu-btn text-slate-600 hover:text-sky-600 disabled:opacity-40"
+          className="flex items-center justify-center p-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 hover:text-slate-900 disabled:opacity-40 transition-colors shadow-2xs"
           title="Next Page"
         >
           <ChevronRight className="w-4 h-4" />

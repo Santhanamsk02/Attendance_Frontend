@@ -222,7 +222,7 @@ export default function AssignmentModal({
                                 const paired = sectionItems.find(r => r.subject.id === subjectId).teacher;
                                 return (
                                     <option key={paired.id} value={paired.id}>
-                                        ★ {paired.name} ({paired.employee_id}) — assigned
+                                        [Assigned] {paired.name} ({paired.employee_id})
                                     </option>
                                 );
                             })()}
@@ -236,7 +236,7 @@ export default function AssignmentModal({
                         </select>
                         {subjectId && sectionItems.find(r => r.subject.id === subjectId)?.teacher && (
                             <p className="text-[10px] text-emerald-600 font-semibold mt-1">
-                                ★ Auto-selected from section assignment
+                                Auto-selected from section assignment
                             </p>
                         )}
                     </div>

@@ -50,17 +50,17 @@ export default function SubjectTable({
     const allSelected = subjects.length > 0 && subjects.every((s) => selectedIds.includes(s.id));
 
     return (
-        <div className="rounded-3xl neu-card overflow-hidden mb-6">
+        <div className="modern-table-wrapper mb-6">
             <div className="overflow-x-auto">
                 <table className="modern-table">
                     <thead>
                         <tr>
-                            <th>
+                            <th className="w-10">
                                 <input
                                     type="checkbox"
                                     checked={allSelected}
                                     onChange={onToggleSelectAll}
-                                    className="rounded accent-indigo-500"
+                                    className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500/20 cursor-pointer"
                                 />
                             </th>
                             <th>Code</th>
@@ -71,68 +71,84 @@ export default function SubjectTable({
                             <th>Type</th>
                             <th>Credits</th>
                             <th>Status</th>
-                            <th>Actions</th>
+                            <th className="text-right">Actions</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-50">
-                        {subjects.map((subject) => (
-                            <tr key={subject.id} className="hover:bg-indigo-50/20 transition-colors">
-                                <td>
-                                    <input
-                                        type="checkbox"
-                                        checked={selectedIds.includes(subject.id)}
-                                        onChange={() => onToggleSelect(subject.id)}
-                                        className="rounded accent-indigo-500"
-                                    />
-                                </td>
-                                <td className="font-bold text-indigo-600">{subject.subject_code}</td>
-                                <td>
-                                    <div className="font-bold text-slate-800 break-words">
-                                        {subject.subject_name}
-                                    </div>
-                                    {subject.subject_title && (
-                                        <div className="text-[10px] text-slate-500 font-semibold capitalize mt-0.5">
-                                            ({subject.subject_title})
+                    <tbody>
+                        {subjects.map((subject) => {
+                            const isSelected = selectedIds.includes(subject.id);
+                            return (
+                                <tr
+                                    key={subject.id}
+                                    onClick={() => onToggleSelect(subject.id)}
+                                    className={`transition-colors cursor-pointer group ${
+                                        isSelected
+                                            ? "bg-indigo-50/60 text-slate-900"
+                                            : "hover:bg-slate-50/80"
+                                    }`}
+                                >
+                                    <td onClick={(e) => e.stopPropagation()}>
+                                        <input
+                                            type="checkbox"
+                                            checked={isSelected}
+                                            onChange={() => onToggleSelect(subject.id)}
+                                            aria-label={`Select subject ${subject.subject_name}`}
+                                            className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500/20 cursor-pointer"
+                                        />
+                                    </td>
+                                    <td>
+                                        <span className="font-mono text-xs font-bold text-indigo-600 bg-indigo-50/80 px-2 py-0.5 rounded-md border border-indigo-100">
+                                            {subject.subject_code}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div className="font-semibold text-slate-900 break-words">
+                                            {subject.subject_name}
                                         </div>
-                                    )}
-                                </td>
-                                <td className="font-bold">{subject.department?.code || subject.department_id}</td>
-                                <td>{subject.academic_year}</td>
-                                <td className="text-center font-bold">{subject.semester}</td>
-                                <td>
-                                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold capitalize ${TYPE_COLORS[subject.subject_type] || TYPE_COLORS.other}`}>
-                                        {TYPE_ICONS[subject.subject_type] || TYPE_ICONS.other}
-                                        {subject.subject_type}
-                                    </span>
-                                </td>
-                                <td className="text-center font-semibold">
-                                    {subject.credits ?? "—"}
-                                </td>
-                                <td className="text-center">
-                                    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${subject.status === "active" ? "bg-emerald-50 text-emerald-600" : "bg-red-50 text-red-500"}`}>
-                                        {subject.status === "active" ? "Active" : "Inactive"}
-                                    </span>
-                                </td>
-                                <td className="text-right">
-                                    <div className="inline-flex items-center gap-1">
-                                        <button
-                                            onClick={() => onEdit(subject)}
-                                            className="p-1.5 rounded-lg text-violet-500 hover:bg-violet-50 transition-colors"
-                                            title="Edit"
-                                        >
-                                            <Edit3 className="w-3.5 h-3.5" />
-                                        </button>
-                                        <button
-                                            onClick={() => onDelete(subject)}
-                                            className="p-1.5 rounded-lg text-rose-500 hover:bg-rose-50 transition-colors"
-                                            title="Delete"
-                                        >
-                                            <Trash2 className="w-3.5 h-3.5" />
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
+                                        {subject.subject_title && (
+                                            <div className="text-[11px] text-slate-400 capitalize mt-0.5">
+                                                ({subject.subject_title})
+                                            </div>
+                                        )}
+                                    </td>
+                                    <td className="font-medium text-slate-700">{subject.department?.code || subject.department_id}</td>
+                                    <td className="text-slate-600 font-medium">{subject.academic_year}</td>
+                                    <td className="text-center font-medium text-slate-700">{subject.semester}</td>
+                                    <td>
+                                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold capitalize ${TYPE_COLORS[subject.subject_type] || TYPE_COLORS.other}`}>
+                                            {TYPE_ICONS[subject.subject_type] || TYPE_ICONS.other}
+                                            {subject.subject_type}
+                                        </span>
+                                    </td>
+                                    <td className="text-center font-semibold text-slate-700">
+                                        {subject.credits ?? "—"}
+                                    </td>
+                                    <td className="text-center">
+                                        <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${subject.status === "active" ? "bg-emerald-50 text-emerald-700 border border-emerald-200/60" : "bg-slate-100 text-slate-600 border border-slate-200"}`}>
+                                            {subject.status === "active" ? "Active" : "Inactive"}
+                                        </span>
+                                    </td>
+                                    <td className="text-right" onClick={(e) => e.stopPropagation()}>
+                                        <div className="inline-flex items-center gap-1">
+                                            <button
+                                                onClick={() => onEdit(subject)}
+                                                className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors"
+                                                title="Edit"
+                                            >
+                                                <Edit3 className="w-4 h-4" />
+                                            </button>
+                                            <button
+                                                onClick={() => onDelete(subject)}
+                                                className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                                                title="Delete"
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            );
+                        })}
                     </tbody>
                 </table>
             </div>

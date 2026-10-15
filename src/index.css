@@ -3,20 +3,49 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --brand-primary: #4f46e5;
+    --brand-primary-hover: #4338ca;
+    --surface-bg: #f8fafc;
+    --card-bg: #ffffff;
+    --border-color: rgba(226, 232, 240, 0.85);
+    font-family: "Times New Roman", Times, serif;
+  }
+
+  *, *::before, *::after {
+    font-family: "Times New Roman", Times, serif !important;
+  }
+
+  html, body {
+    font-family: "Times New Roman", Times, serif !important;
+  }
+
+  input, button, select, textarea, optgroup {
+    font-family: "Times New Roman", Times, serif !important;
+  }
+
   body {
-    @apply bg-[#edf3f9] text-slate-800 antialiased font-sans selection:bg-sky-500 selection:text-white min-h-screen;
-    background-image:
-      radial-gradient(at 0% 0%, rgba(224, 242, 254, 0.7) 0px, transparent 50%),
-      radial-gradient(at 100% 0%, rgba(237, 233, 254, 0.7) 0px, transparent 50%),
-      radial-gradient(at 50% 100%, rgba(240, 249, 255, 0.6) 0px, transparent 50%);
+    @apply bg-slate-50 text-slate-800 antialiased font-sans selection:bg-indigo-500 selection:text-white min-h-screen;
+    background-color: #f8fafc;
+    background-image: 
+      radial-gradient(at 100% 0%, rgba(238, 242, 255, 0.5) 0px, transparent 40%),
+      radial-gradient(at 0% 100%, rgba(241, 245, 249, 0.6) 0px, transparent 40%);
     background-attachment: fixed;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-slate-900 tracking-tight font-bold;
+    font-family: "Times New Roman", Times, serif !important;
   }
 }
 
-/* Custom subtle scrollbar */
+/* Custom modern scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -24,7 +53,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c7d5e4;
+  background: #cbd5e1;
   border-radius: 9999px;
 }
 
@@ -32,214 +61,204 @@
   background: #94a3b8;
 }
 
-@layer components {
-  /* ========================================================
-     MODERN STUNNING TABLE SYSTEM
-     ======================================================== */
-  .modern-table-wrapper {
-    @apply w-full overflow-x-auto rounded-2xl bg-white/70 backdrop-blur-xl border border-white/60 shadow-[0_8px_30px_rgba(166,185,215,0.25)];
+@layer utilities {
+  .shadow-2xs {
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
   }
-
-  table.modern-table {
-    @apply w-full text-sm text-center border-collapse;
-  }
-
-  :where(.modern-table) thead {
-    @apply bg-gradient-to-r from-indigo-50/80 via-white/80 to-sky-50/80 backdrop-blur-md border-b border-indigo-100/50;
-  }
-
-  :where(.modern-table) th {
-    @apply px-4 py-3.5 text-xs font-bold text-indigo-900/80 uppercase tracking-wider whitespace-nowrap;
-  }
-
-  :where(.modern-table) tbody {
-    @apply divide-y divide-indigo-50/40;
-  }
-
-  :where(.modern-table) tr {
-    @apply transition-all duration-200 relative z-0;
-  }
-  
-  :where(.modern-table tbody) tr:hover {
-    @apply bg-white/90 z-10;
-    box-shadow: 0 2px 10px rgba(99,102,241,0.08);
-  }
-
-  :where(.modern-table) td {
-    @apply px-4 py-3 text-slate-600 font-medium;
-  }
-
-  /* Frosted Glass Neumorphic Card with Neon glow */
-  .neu-card {
-    background: rgba(255, 255, 255, 0.59);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    box-shadow:
-      4px 4px 8px rgba(166, 185, 215, 0.4),
-      -4px -4px 2px rgba(255, 255, 255, 0.9),
-      0 0 10px rgba(99, 102, 241, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.9);
-  }
-
-  /* Solid Raised Surface */
-  .neu-surface {
-    background: rgba(244, 248, 253, 0.75);
-    backdrop-filter: blur(16px);
-    box-shadow:
-      6px 6px 18px rgba(170, 190, 220, 0.4),
-      -6px -6px 18px rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(255, 255, 255, 0.85);
-  }
-
-  /* Sunken Glass Inset Input Field */
-  .neu-input {
-    background: rgba(244, 248, 253, 0.6);
-    box-shadow:
-      inset 3px 3px 6px rgba(166, 185, 215, 0.4),
-      inset -3px -3px 6px rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .neu-input:focus {
-    background: rgba(255, 255, 255, 0.9);
-    box-shadow:
-      inset 2px 2px 5px rgba(14, 165, 233, 0.15),
-      inset -2px -2px 5px rgba(255, 255, 255, 1),
-      0 0 0 2.5px rgba(139, 92, 246, 0.4),
-      0 0 15px rgba(139, 92, 246, 0.3);
-    border-color: #a78bfa;
-  }
-
-  /* Raised Soft Clickable Button */
-  .neu-btn {
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(12px);
-    box-shadow:
-      5px 5px 15px rgba(170, 190, 220, 0.4),
-      -5px -5px 15px rgba(255, 255, 255, 0.95),
-      0 0 10px rgba(14, 165, 233, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.9);
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .neu-btn:hover {
-    box-shadow:
-      3px 3px 8px rgba(170, 190, 220, 0.3),
-      -3px -3px 8px rgba(255, 255, 255, 0.9),
-      0 0 15px rgba(14, 165, 233, 0.2);
-    transform: translateY(1px);
-    border-color: rgba(14, 165, 233, 0.3);
-  }
-
-  .neu-btn:active {
-    box-shadow:
-      inset 3px 3px 8px rgba(170, 190, 220, 0.4),
-      inset -3px -3px 8px rgba(255, 255, 255, 0.9);
-    transform: translateY(2px);
-  }
-
-  /* Neon Primary Button */
-  .neu-btn-primary {
-    background: linear-gradient(135deg, #0ea5e9, #6366f1, #8b5cf6);
-    background-size: 200% 200%;
-    animation: gradientShift 4s ease infinite;
-    box-shadow:
-      6px 6px 18px rgba(99, 102, 241, 0.4),
-      -6px -6px 18px rgba(255, 255, 255, 0.9),
-      0 0 20px rgba(139, 92, 246, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    color: #ffffff;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  }
-
-  .neu-btn-primary:hover {
-    box-shadow:
-      4px 4px 12px rgba(99, 102, 241, 0.5),
-      -4px -4px 12px rgba(255, 255, 255, 0.9),
-      0 0 25px rgba(139, 92, 246, 0.7);
-    transform: translateY(1px);
-  }
-
-  .neu-btn-primary:active {
-    box-shadow:
-      inset 3px 3px 10px rgba(49, 46, 129, 0.7),
-      inset -3px -3px 10px rgba(255, 255, 255, 0.3);
-    transform: translateY(3px);
-  }
-
-  /* Danger Neumorphic Button */
-  .neu-btn-danger {
-    background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
-    box-shadow:
-      5px 5px 15px rgba(225, 29, 72, 0.4),
-      -5px -5px 15px rgba(255, 255, 255, 0.9),
-      0 0 20px rgba(225, 29, 72, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    color: #ffffff;
-    transition: all 0.3s ease;
-  }
-
-  .neu-btn-danger:hover {
-    box-shadow:
-      3px 3px 10px rgba(225, 29, 72, 0.5),
-      -3px -3px 10px rgba(255, 255, 255, 0.9),
-      0 0 25px rgba(225, 29, 72, 0.6);
-    transform: translateY(1px);
-  }
-
-  .neu-btn-danger:active {
-    box-shadow: inset 3px 3px 10px rgba(136, 19, 55, 0.7);
-    transform: translateY(2px);
-  }
-
-  /* Soft Light-Blue Pill / Badge */
-  .neu-badge-blue {
-    background: rgba(224, 242, 254, 0.8);
-    backdrop-filter: blur(8px);
-    box-shadow:
-      inset 2px 2px 4px rgba(166, 185, 215, 0.3),
-      inset -2px -2px 4px rgba(255, 255, 255, 0.9),
-      0 0 10px rgba(14, 165, 233, 0.2);
-    border: 1px solid rgba(186, 230, 253, 0.6);
-    color: #0284c7;
-  }
-
-  /* Soft Light-Violet Pill / Badge */
-  .neu-badge-violet {
-    background: rgba(237, 233, 254, 0.8);
-    backdrop-filter: blur(8px);
-    box-shadow:
-      inset 2px 2px 4px rgba(166, 185, 215, 0.3),
-      inset -2px -2px 4px rgba(255, 255, 255, 0.9),
-      0 0 10px rgba(139, 92, 246, 0.3);
-    border: 1px solid rgba(221, 214, 254, 0.6);
-    color: #7c3aed;
-  }
-
-  /* Well Icon Container */
-  .neu-icon-well {
-    background: rgba(238, 244, 252, 0.85);
-    box-shadow:
-      inset 3px 3px 6px rgba(166, 185, 215, 0.4),
-      inset -3px -3px 6px rgba(255, 255, 255, 0.95),
-      0 0 12px rgba(14, 165, 233, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.6);
+  .shadow-xs {
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   }
 }
 
-@keyframes gradientShift {
-  0% {
-    background-position: 0% 50%;
+@layer components {
+  /* ========================================================
+     MODERN ENTERPRISE TABLE SYSTEM
+     ======================================================== */
+  .modern-table-wrapper {
+    @apply w-full overflow-x-auto rounded-2xl bg-white border border-slate-200/80 shadow-sm;
   }
 
-  50% {
-    background-position: 100% 50%;
+  table.modern-table {
+    @apply w-full text-xs text-left border-collapse;
   }
 
-  100% {
-    background-position: 0% 50%;
+  :where(.modern-table) thead {
+    @apply bg-slate-50/90 border-b border-slate-200/80;
+  }
+
+  :where(.modern-table) th {
+    @apply px-4 py-3.5 text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap;
+  }
+
+  :where(.modern-table) tbody {
+    @apply divide-y divide-slate-100;
+  }
+
+  :where(.modern-table) tr {
+    @apply transition-colors duration-150;
+  }
+  
+  :where(.modern-table tbody) tr:hover {
+    @apply bg-slate-50/60;
+  }
+
+  :where(.modern-table) td {
+    @apply px-4 py-3.5 text-slate-700 font-medium align-middle;
+  }
+
+  /* ========================================================
+     REFINED ENTERPRISE SURFACE TOKENS
+     (Elevates existing .neu-* classes to premium modern SaaS)
+     ======================================================== */
+
+  /* Crisp Modern Card Surface */
+  .neu-card {
+    background: #ffffff;
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
+    border-radius: 1rem;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .neu-card:hover {
+    border-color: rgba(203, 213, 225, 0.9);
+    box-shadow: 0 4px 14px -2px rgba(15, 23, 42, 0.07), 0 2px 6px -2px rgba(15, 23, 42, 0.04);
+  }
+
+  /* Subtle Inset or Secondary Surface */
+  .neu-surface, .neu-inset {
+    background: #f8fafc;
+    border: 1px solid rgba(226, 232, 240, 0.85);
+    border-radius: 0.875rem;
+  }
+
+  /* High-Precision Form Input */
+  .neu-input {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.75rem;
+    color: #0f172a;
+    font-size: 0.875rem;
+    padding: 0.625rem 0.875rem;
+    box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.03);
+    transition: all 0.15s ease-in-out;
+  }
+
+  .neu-input:focus {
+    background: #ffffff;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+    outline: none;
+  }
+
+  .neu-input::placeholder {
+    color: #94a3b8;
+  }
+
+  /* Clean Secondary Button */
+  .neu-btn {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    color: #334155;
+    font-weight: 600;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
+    transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .neu-btn:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #0f172a;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px 0 rgba(15, 23, 42, 0.06);
+  }
+
+  .neu-btn:active {
+    background: #f1f5f9;
+    transform: translateY(0);
+    box-shadow: none;
+  }
+
+  /* Refined Primary Brand Button */
+  .neu-btn-primary {
+    background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+    border: 1px solid rgba(79, 70, 229, 0.9);
+    color: #ffffff;
+    font-weight: 600;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px 0 rgba(79, 70, 229, 0.25), 0 1px 2px -1px rgba(79, 70, 229, 0.2);
+    transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .neu-btn-primary:hover {
+    background: linear-gradient(135deg, #4338ca 0%, #4f46e5 100%);
+    box-shadow: 0 4px 12px 0 rgba(79, 70, 229, 0.32);
+    transform: translateY(-1px);
+  }
+
+  .neu-btn-primary:active {
+    background: #3730a3;
+    transform: translateY(0);
+    box-shadow: 0 1px 2px 0 rgba(79, 70, 229, 0.25);
+  }
+
+  /* Refined Danger Button */
+  .neu-btn-danger {
+    background: #ef4444;
+    border: 1px solid #dc2626;
+    color: #ffffff;
+    font-weight: 600;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 2px 0 rgba(239, 68, 68, 0.2);
+    transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .neu-btn-danger:hover {
+    background: #dc2626;
+    box-shadow: 0 3px 8px 0 rgba(239, 68, 68, 0.3);
+    transform: translateY(-1px);
+  }
+
+  .neu-btn-danger:active {
+    background: #b91c1c;
+    transform: translateY(0);
+  }
+
+  /* Refined Pill Badges */
+  .neu-badge-blue {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    color: #1d4ed8;
+    font-weight: 600;
+    border-radius: 9999px;
+  }
+
+  .neu-badge-violet {
+    background: #f5f3ff;
+    border: 1px solid #ddd6fe;
+    color: #6d28d9;
+    font-weight: 600;
+    border-radius: 9999px;
+  }
+
+  /* Modern Icon Well */
+  .neu-icon-well {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.875rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 
@@ -247,9 +266,8 @@
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(4px);
+    transform: translateY(3px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
@@ -257,112 +275,94 @@
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+/* ========================================================
+   TIMETABLE GRID SYSTEM
+   ======================================================== */
 .tt-cell-empty {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 110px;
-  border: 1px solid rgba(226, 232, 240, 0.8);
-  border-radius: 12px;
+  min-height: 100px;
+  border: 1.5px dashed #cbd5e1;
+  border-radius: 0.875rem;
   padding: 8px;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.15s ease-in-out;
   position: relative;
-  background: rgba(255, 255, 255, 0.25);
-}
-
-.tt-cell-empty::before {
-  content: '';
-  position: absolute;
-  inset: 4px;
-  border: 1.5px dashed rgba(148, 163, 184, 0.3);
-  border-radius: 10px;
-  transition: all 0.2s;
-}
-
-.tt-cell-empty:hover::before {
-  border-color: rgba(99, 102, 241, 0.5);
+  background: #ffffff;
 }
 
 .tt-cell-empty:hover {
-  background: rgba(238, 242, 255, 0.7);
+  background: #f8fafc;
+  border-color: #6366f1;
 }
 
 .tt-cell-drop-active {
-  background: rgba(224, 231, 255, 0.8) !important;
-  box-shadow: inset 0 0 0 2px rgba(99, 102, 241, 0.6), 0 0 20px rgba(99, 102, 241, 0.2);
-}
-
-.tt-cell-drop-active::before {
-  border-color: rgba(99, 102, 241, 0.7) !important;
+  background: #eef2ff !important;
+  border-color: #4f46e5 !important;
   border-style: solid !important;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
 }
 
 .tt-cell-assigned {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  min-height: 110px;
-  border-radius: 12px;
+  min-height: 100px;
+  border-radius: 0.875rem;
   padding: 10px 12px;
   text-align: left;
   position: relative;
   overflow: hidden;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(8px);
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04);
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Color-coded left border tap by session type */
 .tt-cell-theory {
-  border-left: 3px solid #6366f1;
-  background: linear-gradient(135deg, rgba(238, 242, 255, 0.8) 0%, rgba(255, 255, 255, 0.7) 100%);
+  border-left: 3.5px solid #4f46e5;
+  background: #ffffff;
 }
 
 .tt-cell-practical {
-  border-left: 3px solid #10b981;
-  background: linear-gradient(135deg, rgba(236, 253, 245, 0.8) 0%, rgba(255, 255, 255, 0.7) 100%);
+  border-left: 3.5px solid #059669;
+  background: #ffffff;
 }
 
 .tt-cell-laboratory {
-  border-left: 3px solid #8b5cf6;
-  background: linear-gradient(135deg, rgba(245, 243, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
+  border-left: 3.5px solid #7c3aed;
+  background: #ffffff;
 }
 
 .tt-cell-elective {
-  border-left: 3px solid #f59e0b;
-  background: linear-gradient(135deg, rgba(255, 251, 235, 0.8) 0%, rgba(255, 255, 255, 0.7) 100%);
+  border-left: 3.5px solid #d97706;
+  background: #ffffff;
 }
 
 .tt-cell-assigned:hover {
-  transform: scale(1.01);
-  z-index: 2;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 0 0 2px rgba(99, 102, 241, 0.25);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.08);
+  border-color: #cbd5e1;
 }
 
 .tt-cell-break {
-  min-height: 110px;
-  border: 1px solid rgba(226, 232, 240, 0.8);
-  border-radius: 12px;
-  background: repeating-linear-gradient(45deg,
-      rgba(251, 191, 36, 0.06),
-      rgba(251, 191, 36, 0.06) 6px,
-      transparent 6px,
-      transparent 14px);
+  min-height: 100px;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.875rem;
+  background: #f8fafc;
   padding: 10px;
 }
 
 .tt-header-day {
-  background: rgba(248, 250, 252, 0.98);
-  backdrop-filter: blur(8px);
+  background: #f8fafc;
   min-width: 80px;
 }
 
 /* ── Print styles ───────────────────────────────────── */
-
 @media print {
   @page {
     size: landscape;
@@ -378,5 +378,3 @@
     display: none !important;
   }
 }
-
-

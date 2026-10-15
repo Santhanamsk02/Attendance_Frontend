@@ -413,7 +413,7 @@ export default function DailyRegisterReport() {
                   <tr>
                     <td colSpan={5} className="px-4 py-12 text-center text-slate-400">
                       {statusFilter === "Absent"
-                        ? "🎉 No absentees for the selected filters on this date."
+                        ? "No absentees for the selected filters on this date."
                         : "No students found."}
                     </td>
                   </tr>

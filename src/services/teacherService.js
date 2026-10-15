@@ -79,6 +79,22 @@ export const teacherService = {
         return response.data;
     },
 
+    async bulkDeleteTeachers(teacherIds) {
+        return this.bulkDelete(teacherIds);
+    },
+
+    /**
+     * Deletes all teachers from the database.
+     */
+    async deleteAllTeachers() {
+        const response = await apiClient.post("/teachers/delete-all");
+        return response.data;
+    },
+
+    async deleteAll() {
+        return this.deleteAllTeachers();
+    },
+
     /**
      * Downloads sample import CSV template.
      */

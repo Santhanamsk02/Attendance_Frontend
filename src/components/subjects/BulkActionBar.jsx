@@ -11,13 +11,13 @@ export default function BulkActionBar({
 
     return (
         <div className="fixed bottom-7 left-1/2 -translate-x-1/2 z-40 w-auto max-w-lg animate-fade-in">
-            <div className="flex items-center gap-3 px-5 py-3 rounded-3xl bg-white text-slate-800 neu-card shadow-[0_10px_30px_rgba(166,185,210,0.5)] border border-white">
+            <div className="flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-slate-900 text-white shadow-2xl border border-slate-800">
                 {/* Selected Counter Pill */}
-                <div className="flex items-center gap-2 pr-3 border-r border-slate-200">
-                    <span className="flex h-6 min-w-6 items-center justify-center rounded-full bg-violet-500 text-[11px] font-black px-1.5 text-white shadow-[0_2px_6px_rgba(139,92,246,0.4)]">
+                <div className="flex items-center gap-2 pr-3 border-r border-slate-700/80">
+                    <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-indigo-500 text-[11px] font-bold px-1.5 text-white">
                         {selectedCount}
                     </span>
-                    <span className="text-xs font-bold text-slate-700 whitespace-nowrap">
+                    <span className="text-xs font-medium text-slate-200 whitespace-nowrap">
                         {selectedCount === 1 ? "subject selected" : "subjects selected"}
                     </span>
                 </div>
@@ -26,7 +26,7 @@ export default function BulkActionBar({
                 <button
                     onClick={onClearSelection}
                     disabled={isLoading}
-                    className="inline-flex items-center gap-1 text-xs text-slate-400 hover:text-slate-600 transition-colors p-1.5 rounded-xl neu-btn"
+                    className="inline-flex items-center gap-1 text-xs text-slate-400 hover:text-white transition-colors px-2 py-1 rounded-lg hover:bg-slate-800"
                     title="Clear Selection"
                 >
                     <X className="w-3.5 h-3.5" />
@@ -37,7 +37,7 @@ export default function BulkActionBar({
                 <button
                     onClick={onBulkDelete}
                     disabled={isLoading}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl neu-btn-danger text-xs font-bold disabled:opacity-50"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white text-xs font-semibold shadow-xs transition-colors disabled:opacity-50"
                 >
                     <Trash2 className="w-3.5 h-3.5" />
                     <span>Delete ({selectedCount})</span>

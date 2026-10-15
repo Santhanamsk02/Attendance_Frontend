@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { reportsService } from "../../../services/reportsService";
-import { ShieldAlert, RefreshCw } from "lucide-react";
+import { ShieldAlert, RefreshCw, CheckCircle } from "lucide-react";
 
 function InfoCard({ label, value, sub, danger }) {
   return (
@@ -136,8 +136,8 @@ export default function DataHealthReport() {
       )}
 
       {data.orphaned_marks_total === 0 && data.partial_roster_sessions.length === 0 && (
-        <div className="text-center py-12 text-emerald-600 bg-emerald-50 rounded-2xl border border-emerald-100 font-medium">
-          ✓ All data looks healthy — no orphaned marks or partial rosters detected.
+        <div className="text-center py-12 text-emerald-600 bg-emerald-50 rounded-2xl border border-emerald-100 font-medium flex items-center justify-center gap-2">
+          <CheckCircle className="w-5 h-5" /> All data looks healthy — no orphaned marks or partial rosters detected.
         </div>
       )}
     </div>

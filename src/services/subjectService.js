@@ -53,6 +53,22 @@ export const subjectService = {
         return response.data;
     },
 
+    async bulkDeleteSubjects(subjectIds) {
+        return this.bulkDelete(subjectIds);
+    },
+
+    /**
+     * Deletes all subjects from the database.
+     */
+    async deleteAllSubjects() {
+        const response = await apiClient.post("/subjects/delete-all");
+        return response.data;
+    },
+
+    async deleteAll() {
+        return this.deleteAllSubjects();
+    },
+
     async downloadTemplate() {
         const response = await apiClient.get("/subjects/import-template", {
             responseType: "blob",

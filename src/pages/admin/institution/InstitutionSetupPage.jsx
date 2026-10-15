@@ -1,13 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import { Building2, GraduationCap, Plus, Save, ServerCrash, Pencil, Trash2 } from 'lucide-react';
+import { Building2, GraduationCap, Plus, Save, ServerCrash, Pencil, Trash2, Sparkles, Award, Users, Calendar, Clock, BookOpen } from 'lucide-react';
 import { useToast } from '../../../context/ToastContext';
 import { apiClient } from '../../../services/api';
+import specialTrainingService from '../../../services/specialTrainingService';
+import SpecialTrainingModal from '../../../components/training/SpecialTrainingModal';
+import TrainingEnrollmentModal from '../../../components/training/TrainingEnrollmentModal';
+import TrainingSubjectsModal from '../../../components/training/TrainingSubjectsModal';
+import TrainingTimetableModal from '../../../components/training/TrainingTimetableModal';
 
 export default function InstitutionSetupPage() {
+    const [activeView, setActiveView] = useState("departments"); // "departments" | "special_training"
     const [departments, setDepartments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const { success, error: showError } = useToast();
+
+    // Special Training states
+    const [trainings, setTrainings] = useState([]);
+    const [loadingTrainings, setLoadingTrainings] = useState(false);
+    const [isTrainingModalOpen, setIsTrainingModalOpen] = useState(false);
+    const [editingTraining, setEditingTraining] = useState(null);
+    const [isEnrollModalOpen, setIsEnrollModalOpen] = useState(false);
+    const [selectedTrainingForEnroll, setSelectedTrainingForEnroll] = useState(null);
+    const [isSubjectsModalOpen, setIsSubjectsModalOpen] = useState(false);
+    const [selectedTrainingForSubjects, setSelectedTrainingForSubjects] = useState(null);
+    const [isTimetableModalOpen, setIsTimetableModalOpen] = useState(false);
+    const [selectedTrainingForTimetable, setSelectedTrainingForTimetable] = useState(null);
 
     // Form inputs
     const [deptForm, setDeptForm] = useState({ name: '', code: '', morning_entry_time: '' });
@@ -32,6 +50,7 @@ export default function InstitutionSetupPage() {
         onConfirm: null
     });
 
+
     const fetchInstitutionData = async () => {
         try {
             setLoading(true);
@@ -52,9 +71,58 @@ export default function InstitutionSetupPage() {
         }
     };
 
+    const fetchTrainings = async () => {
+        try {
+            setLoadingTrainings(true);
+            const data = await specialTrainingService.getAll();
+            setTrainings(data || []);
+        } catch (err) {
+            console.error("Failed to load special trainings", err);
+        } finally {
+            setLoadingTrainings(false);
+        }
+    };
+
     useEffect(() => {
         fetchInstitutionData();
+        fetchTrainings();
     }, []);
+
+    const handleSaveTraining = async (formData) => {
+        try {
+            if (editingTraining?.id) {
+                await specialTrainingService.update(editingTraining.id, formData);
+                success(`Training updated successfully.`);
+            } else {
+                await specialTrainingService.create(formData);
+                success(`Special training ${formData.name} created successfully.`);
+            }
+            setIsTrainingModalOpen(false);
+            setEditingTraining(null);
+            fetchTrainings();
+        } catch (err) {
+            showError(err.response?.data?.detail || err.message || "Failed to save training");
+        }
+    };
+
+    const handleDeleteTraining = (training) => {
+        setConfirmModal({
+            isOpen: true,
+            title: 'Delete Special Training',
+            message: `Are you sure you want to delete "${training.name}"? All enrollments and timetable slots for this training will be removed.`,
+            onConfirm: async () => {
+                setConfirmModal(prev => ({ ...prev, isOpen: false }));
+                try {
+                    await specialTrainingService.delete(training.id);
+                    success(`Training deleted successfully.`);
+                    fetchTrainings();
+                } catch (err) {
+                    showError(err.response?.data?.detail || err.message || "Failed to delete training");
+                }
+            }
+        });
+    };
+
 
     // Helper handlers to open forms
     const openAddDept = () => {
@@ -155,7 +223,7 @@ export default function InstitutionSetupPage() {
                     success(`Department ${name} deleted successfully.`);
                     fetchInstitutionData();
                 } catch (err) {
-                    showError(err.message || "Failed to delete department");
+                    showError(err.response?.data?.detail || err.message || "Failed to delete department");
                 }
             }
         });
@@ -173,11 +241,12 @@ export default function InstitutionSetupPage() {
                     success(`Batch ${name} deleted successfully.`);
                     fetchInstitutionData();
                 } catch (err) {
-                    showError(err.message || "Failed to delete batch");
+                    showError(err.response?.data?.detail || err.message || "Failed to delete batch");
                 }
             }
         });
     };
+
 
     if (loading && departments.length === 0) {
         return (
@@ -200,22 +269,85 @@ export default function InstitutionSetupPage() {
 
     return (
         <div className="max-w-6xl mx-auto space-y-6">
-            <div className="flex items-center justify-between mb-2">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2">
                 <div>
                     <h1 className="text-[24px] font-black text-slate-800 tracking-tight leading-tight">Institution Architecture</h1>
-                    <p className="text-[15px] font-semibold text-slate-500 mt-1">Manage global structural namespaces (Departments & Cohorts).</p>
+                    <p className="text-[15px] font-semibold text-slate-500 mt-1">
+                        {activeView === "departments"
+                            ? "Manage global structural namespaces (Departments & Cohorts)."
+                            : "Configure Final Year Special Training programs, shared timetables, and multi-staff attendance."}
+                    </p>
                 </div>
-                <div className="flex gap-3">
-                    <button onClick={openAddBatch} className="px-4 py-2 bg-indigo-50 text-indigo-600 rounded-xl text-sm font-bold shadow-sm shadow-indigo-100 hover:bg-indigo-100 transition-colors flex items-center gap-2">
-                        <GraduationCap className="w-4 h-4" /> Add Batch
+                {activeView === "departments" ? (
+                    <div className="flex flex-wrap items-center gap-2.5">
+                        <button
+                            onClick={openAddBatch}
+                            className="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl shadow-2xs transition-all duration-150"
+                        >
+                            <GraduationCap className="w-4 h-4 text-slate-500" /> Add Batch
+                        </button>
+                        <button
+                            onClick={openAddDept}
+                            className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 rounded-xl shadow-xs transition-all duration-150"
+                        >
+                            <Building2 className="w-4 h-4" /> Add Department
+                        </button>
+                    </div>
+                ) : (
+                    <button
+                        onClick={() => {
+                            setEditingTraining(null);
+                            setIsTrainingModalOpen(true);
+                        }}
+                        className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 rounded-xl shadow-xs transition-all duration-150"
+                    >
+                        <Sparkles className="w-4 h-4" /> Create Special Training
                     </button>
-                    <button onClick={openAddDept} className="px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-bold shadow-lg shadow-indigo-200 hover:-translate-y-0.5 transition-all flex items-center gap-2">
-                        <Building2 className="w-4 h-4" /> Add Department
-                    </button>
-                </div>
+                )}
             </div>
 
-            {/* Department Modal */}
+            {/* View Switcher Tabs */}
+            <div className="flex items-center gap-1.5 bg-slate-200/50 p-1 rounded-2xl border border-slate-200/70 max-w-fit shadow-2xs">
+                <button
+                    onClick={() => setActiveView("departments")}
+                    className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+                        activeView === "departments"
+                            ? "bg-white text-slate-900 shadow-xs border border-slate-200/80"
+                            : "text-slate-600 hover:text-slate-900 hover:bg-white/50"
+                    }`}
+                >
+                    <Building2 className={`w-3.5 h-3.5 ${activeView === "departments" ? "text-indigo-600" : "text-slate-400"}`} />
+                    Departments & Cohorts
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                        activeView === "departments" ? "bg-indigo-50 text-indigo-700" : "bg-slate-200 text-slate-600"
+                    }`}>
+                        {departments.length}
+                    </span>
+                </button>
+                <button
+                    onClick={() => setActiveView("special_training")}
+                    className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+                        activeView === "special_training"
+                            ? "bg-white text-slate-900 shadow-xs border border-slate-200/80"
+                            : "text-slate-600 hover:text-slate-900 hover:bg-white/50"
+                    }`}
+                >
+                    <Sparkles className={`w-3.5 h-3.5 ${activeView === "special_training" ? "text-violet-600" : "text-slate-400"}`} />
+                    Final Year Special Trainings
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                        activeView === "special_training" ? "bg-violet-50 text-violet-700" : "bg-slate-200 text-slate-600"
+                    }`}>
+                        {trainings.length}
+                    </span>
+                </button>
+            </div>
+
+
+            {/* VIEW 1: DEPARTMENTS & COHORTS */}
+            {activeView === "departments" && (
+                <>
+                    {/* Department Modal */}
+
             {isAddingDept && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fade-in">
                     <div className="neu-card border border-slate-100 p-6 bg-white rounded-3xl shadow-2xl w-full max-w-2xl relative">
@@ -354,7 +486,7 @@ export default function InstitutionSetupPage() {
                                     )}
                                 </div>
                             </div>
-                            <div className="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center neu-pressed">
+                            <div className="w-10 h-10 rounded-2xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center shadow-2xs">
                                 <Building2 className="w-5 h-5" />
                             </div>
                         </div>
@@ -418,8 +550,202 @@ export default function InstitutionSetupPage() {
                     <p className="text-sm font-semibold text-slate-400 mt-2 max-w-sm mx-auto">Create your first department above to begin constructing the institutional architecture.</p>
                 </div>
             )}
+        </>
+    )}
+
+            {/* VIEW 2: FINAL YEAR SPECIAL TRAINING PROGRAMS */}
+            {activeView === "special_training" && (
+                <div className="space-y-6">
+                    {loadingTrainings ? (
+                        <div className="p-12 text-center text-sm font-semibold text-slate-400 animate-pulse">
+                            Loading special training programs...
+                        </div>
+                    ) : trainings.length === 0 ? (
+                        <div className="p-12 text-center bg-white/80 border-2 border-dashed border-slate-200 rounded-3xl space-y-4">
+                            <div className="w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto">
+                                <Sparkles className="w-7 h-7" />
+                            </div>
+                            <div className="max-w-md mx-auto">
+                                <h3 className="text-lg font-bold text-slate-800">No Final Year Special Trainings Created</h3>
+                                <p className="text-xs text-slate-500 mt-1">
+                                    Create shared training programs for final year cohorts across multiple departments. You can schedule shared timetables, assign trainers to take class, and assign multiple teachers to take attendance concurrently.
+                                </p>
+                            </div>
+                            <button
+                                onClick={() => {
+                                    setEditingTraining(null);
+                                    setIsTrainingModalOpen(true);
+                                }}
+                                className="px-5 py-2.5 bg-indigo-600 text-white rounded-xl text-xs font-bold shadow-md shadow-indigo-200 hover:bg-indigo-700 transition-all inline-flex items-center gap-2"
+                            >
+                                <Sparkles className="w-4 h-4" /> Create Special Training
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                            {trainings.map(t => (
+                                <div
+                                    key={t.id}
+                                    className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs hover:border-indigo-200 transition-all space-y-5 flex flex-col justify-between"
+                                >
+                                    <div className="space-y-3">
+                                        <div className="flex items-start justify-between gap-4">
+                                            <div>
+                                                <div className="flex items-center gap-2 mb-1">
+                                                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black tracking-wide bg-gradient-to-r from-indigo-500 to-violet-600 text-white">
+                                                        FINAL YEAR BATCH: {t.batch_name}
+                                                    </span>
+                                                    {t.venue && (
+                                                        <span className="text-[11px] font-semibold text-slate-500">
+                                                            • {t.venue}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <h3 className="text-lg font-black text-slate-900 tracking-tight">{t.name}</h3>
+                                            </div>
+                                            <div className="flex items-center gap-1 shrink-0">
+                                                <button
+                                                    onClick={() => {
+                                                        setEditingTraining(t);
+                                                        setIsTrainingModalOpen(true);
+                                                    }}
+                                                    className="text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 p-1.5 rounded-lg transition-colors"
+                                                    title="Edit Training Details"
+                                                >
+                                                    <Pencil className="w-4 h-4" />
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDeleteTraining(t)}
+                                                    className="text-slate-400 hover:text-rose-600 hover:bg-rose-50 p-1.5 rounded-lg transition-colors"
+                                                    title="Delete Special Training"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        {t.trainer_name && (
+                                            <div className="flex items-center gap-2 text-xs text-slate-600 bg-slate-50 px-3 py-2 rounded-xl border border-slate-100">
+                                                <Award className="w-4 h-4 text-violet-500 shrink-0" />
+                                                <span>
+                                                    Trainer: <strong className="text-slate-800">{t.trainer_name}</strong>
+                                                    {t.trainer_organization && (
+                                                        <span className="text-slate-400"> ({t.trainer_organization})</span>
+                                                    )}
+                                                </span>
+                                            </div>
+                                        )}
+
+                                        {t.description && (
+                                            <p className="text-xs text-slate-500 font-medium line-clamp-2">
+                                                {t.description}
+                                            </p>
+                                        )}
+
+                                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
+                                            <div className="bg-indigo-50/50 border border-indigo-100/70 p-3 rounded-2xl">
+                                                <span className="text-[10px] font-black uppercase tracking-wider text-indigo-700">Enrolled Students</span>
+                                                <p className="text-lg font-black text-slate-900 mt-0.5">
+                                                    {t.enrolled_count} <span className="text-xs font-semibold text-slate-500 font-normal">({t.departments_count} Depts)</span>
+                                                </p>
+                                            </div>
+                                            <div className="bg-emerald-50/50 border border-emerald-100/70 p-3 rounded-2xl">
+                                                <span className="text-[10px] font-black uppercase tracking-wider text-emerald-700">Training Subjects</span>
+                                                <p className="text-lg font-black text-slate-900 mt-0.5">
+                                                    {t.subjects_count || 0} <span className="text-xs font-semibold text-slate-500 font-normal">Configured</span>
+                                                </p>
+                                            </div>
+                                            <div className="bg-violet-50/50 border border-violet-100/70 p-3 rounded-2xl">
+                                                <span className="text-[10px] font-black uppercase tracking-wider text-violet-700">Timetable Slots</span>
+                                                <p className="text-lg font-black text-slate-900 mt-0.5">
+                                                    {t.timetable_slots_count} <span className="text-xs font-semibold text-slate-500 font-normal">Scheduled</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-3 border-t border-slate-100">
+                                        <button
+                                            onClick={() => {
+                                                setSelectedTrainingForEnroll(t);
+                                                setIsEnrollModalOpen(true);
+                                            }}
+                                            className="px-3 py-2 rounded-xl text-xs font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition-all flex items-center justify-center gap-1.5"
+                                        >
+                                            <Users className="w-3.5 h-3.5" />
+                                            Manage Students
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                setSelectedTrainingForSubjects(t);
+                                                setIsSubjectsModalOpen(true);
+                                            }}
+                                            className="px-3 py-2 rounded-xl text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 transition-all flex items-center justify-center gap-1.5"
+                                        >
+                                            <BookOpen className="w-3.5 h-3.5" />
+                                            Manage Subjects
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                setSelectedTrainingForTimetable(t);
+                                                setIsTimetableModalOpen(true);
+                                            }}
+                                            className="px-3 py-2 rounded-xl text-xs font-bold text-violet-700 bg-violet-50 hover:bg-violet-100 transition-all flex items-center justify-center gap-1.5"
+                                        >
+                                            <Calendar className="w-3.5 h-3.5" />
+                                            Timetable & Staff
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {/* Special Training Modals */}
+            <SpecialTrainingModal
+                isOpen={isTrainingModalOpen}
+                onClose={() => {
+                    setIsTrainingModalOpen(false);
+                    setEditingTraining(null);
+                }}
+                onSave={handleSaveTraining}
+                editingTraining={editingTraining}
+            />
+
+            <TrainingEnrollmentModal
+                isOpen={isEnrollModalOpen}
+                onClose={() => {
+                    setIsEnrollModalOpen(false);
+                    setSelectedTrainingForEnroll(null);
+                }}
+                training={selectedTrainingForEnroll}
+                onUpdated={fetchTrainings}
+            />
+
+            <TrainingSubjectsModal
+                isOpen={isSubjectsModalOpen}
+                onClose={() => {
+                    setIsSubjectsModalOpen(false);
+                    setSelectedTrainingForSubjects(null);
+                }}
+                training={selectedTrainingForSubjects}
+                onUpdated={fetchTrainings}
+            />
+
+            <TrainingTimetableModal
+                isOpen={isTimetableModalOpen}
+                onClose={() => {
+                    setIsTimetableModalOpen(false);
+                    setSelectedTrainingForTimetable(null);
+                }}
+                training={selectedTrainingForTimetable}
+                onUpdated={fetchTrainings}
+            />
 
             {/* Confirmation Modal */}
+
             {confirmModal.isOpen && (
                 <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fade-in">
                     <div className="neu-card border border-slate-100 p-6 bg-white rounded-3xl shadow-2xl w-full max-w-md relative">

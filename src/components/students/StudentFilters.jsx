@@ -52,15 +52,15 @@ export default function StudentFilters({
   const selectedBatch = selectedDept?.batches?.find(b => b.id === filters.batch_id);
 
   return (
-    <div className="rounded-3xl neu-card p-5 mb-6">
-      <div className="flex flex-wrap items-center justify-between gap-3 mb-4 pb-3.5 border-b border-slate-100/80">
-        <div className="flex items-center gap-2.5 text-xs font-black text-slate-700 uppercase tracking-wider">
-          <div className="p-1.5 rounded-xl neu-icon-well text-violet-600">
+    <div className="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-5 shadow-xs mb-6">
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-100">
+        <div className="flex items-center gap-2 text-xs font-bold text-slate-800 uppercase tracking-wider">
+          <div className="p-1.5 rounded-lg bg-indigo-50 text-indigo-600 border border-indigo-100">
             <Filter className="w-3.5 h-3.5" />
           </div>
           <span>Filters & Cohort Segmentation</span>
           {activeFiltersCount > 0 && (
-            <span className="px-2.5 py-0.5 rounded-full neu-badge-violet text-[10px] font-black">
+            <span className="px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 text-[10px] font-bold">
               {activeFiltersCount} active
             </span>
           )}
@@ -69,7 +69,7 @@ export default function StudentFilters({
         {activeFiltersCount > 0 && (
           <button
             onClick={onReset}
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-rose-500 hover:text-rose-600 transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-rose-600 hover:text-rose-700 hover:bg-rose-50 px-2.5 py-1 rounded-lg transition-colors"
           >
             <RotateCcw className="w-3 h-3" />
             Clear All
@@ -80,14 +80,14 @@ export default function StudentFilters({
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
         {/* Department Filter */}
         <div>
-          <label className="block text-[11px] font-bold text-slate-400 mb-1">
+          <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-1">
             Department
           </label>
           <select
             value={filters.department_id || ""}
             onChange={(e) => handleFilterChange("department_id", e.target.value)}
             disabled={isLoading}
-            className="w-full rounded-xl neu-input px-3 py-2 text-xs text-slate-700 font-semibold focus:outline-none disabled:opacity-50"
+            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 disabled:opacity-50 transition-all shadow-2xs"
           >
             <option value="">All Departments</option>
             {departments.map((dept) => (
@@ -100,14 +100,14 @@ export default function StudentFilters({
 
         {/* Academic Batch Filter */}
         <div>
-          <label className="block text-[11px] font-bold text-slate-400 mb-1">
+          <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-1">
             Academic Batch
           </label>
           <select
             value={filters.batch_id || ""}
             onChange={(e) => handleFilterChange("batch_id", e.target.value)}
             disabled={!filters.department_id || isLoading}
-            className="w-full rounded-xl neu-input px-3 py-2 text-xs text-slate-700 font-semibold focus:outline-none disabled:opacity-50"
+            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 disabled:opacity-50 transition-all shadow-2xs"
           >
             <option value="">All Batches</option>
             {selectedDept?.batches?.map((b) => (
@@ -120,14 +120,14 @@ export default function StudentFilters({
 
         {/* Section Filter */}
         <div>
-          <label className="block text-[11px] font-bold text-slate-400 mb-1">
+          <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-1">
             Section
           </label>
           <select
             value={filters.section || ""}
             onChange={(e) => handleFilterChange("section", e.target.value)}
             disabled={!filters.batch_id}
-            className="w-full rounded-xl neu-input px-3 py-2 text-xs text-slate-700 font-semibold focus:outline-none disabled:opacity-50"
+            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 disabled:opacity-50 transition-all shadow-2xs"
           >
             <option value="">All Sections</option>
             {selectedBatch && Array.from({ length: selectedBatch.sections_count }).map((_, i) => (
@@ -140,13 +140,13 @@ export default function StudentFilters({
 
         {/* Status Filter */}
         <div>
-          <label className="block text-[11px] font-bold text-slate-400 mb-1">
+          <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-1">
             Status
           </label>
           <select
             value={filters.status || ""}
             onChange={(e) => handleFilterChange("status", e.target.value)}
-            className="w-full rounded-xl neu-input px-3 py-2 text-xs text-slate-700 font-semibold focus:outline-none"
+            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-2xs"
           >
             <option value="">All Statuses</option>
             {STATUS_OPTIONS.map((st) => (

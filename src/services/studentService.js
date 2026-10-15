@@ -79,6 +79,22 @@ export const studentService = {
     return response.data;
   },
 
+  async bulkDelete(studentIds) {
+    return this.bulkDeleteStudents(studentIds);
+  },
+
+  /**
+   * Deletes all students from the database.
+   */
+  async deleteAllStudents() {
+    const response = await apiClient.post("/students/delete-all");
+    return response.data;
+  },
+
+  async deleteAll() {
+    return this.deleteAllStudents();
+  },
+
   /**
    * Downloads sample import CSV template.
    */

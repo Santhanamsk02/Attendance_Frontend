@@ -25,10 +25,32 @@ dist-ssr
 
 # Environment variables
 .env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.*
+!.env.example
+
+# Vite temporary files
+*.timestamp-*.mjs
+*.timestamp-*.js
 
 # TypeScript
 *.tsbuildinfo
+
+# Testing & Coverage
+coverage/
+.nyc_output/
+
+# Cache & Build
+.turbo/
+.cache/
+.parcel-cache/
+
+# OS and Temporary files
+Thumbs.db
+*.bak
+temp/
+tmp/
+
+# Workspace & Agents
+.agents/
+graphify-out/
+

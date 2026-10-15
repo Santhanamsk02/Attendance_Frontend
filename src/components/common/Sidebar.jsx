@@ -18,6 +18,7 @@ import {
   UserCircle,
   TrendingUp,
   AlertOctagon,
+  Award,
 } from "lucide-react";
 
 const NAV_ITEMS = [
@@ -36,6 +37,7 @@ const NAV_ITEMS = [
       { name: "Daily Register", path: "/reports/daily", icon: ClipboardList },
       { name: "Student Profile", path: "/reports/student", icon: UserCircle },
       { name: "Defaulters", path: "/reports/defaulters", icon: AlertOctagon },
+      { name: "Special Training", path: "/reports/training", icon: Award },
     ]
   },
 ];
@@ -62,42 +64,42 @@ export default function Sidebar({ isOpen, onClose, onCollapsedChange }) {
       )}
 
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 flex flex-col bg-white/80 backdrop-blur-2xl border-r border-white/90 shadow-[6px_0_24px_rgba(166,185,215,0.3)] transition-all duration-300 ease-in-out
+        className={`fixed top-0 bottom-0 left-0 z-50 flex flex-col bg-white border-r border-slate-200/80 shadow-[0_4px_24px_rgba(15,23,42,0.04)] transition-all duration-300 ease-in-out
           ${collapsed ? "lg:w-16 w-16" : "lg:w-64 w-64"}
           ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
       >
         {/* ── Brand / Logo ───────────────────────────────── */}
-        <div className={`flex h-16 items-center border-b border-slate-200/50 bg-white/50
+        <div className={`flex h-16 items-center border-b border-slate-200/80 bg-white
           ${collapsed ? "justify-center px-0" : "justify-between px-5"}`}
         >
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="flex-shrink-0 flex h-9 w-9 items-center justify-center rounded-2xl bg-gradient-to-tr from-sky-500 via-indigo-500 to-violet-600 text-white shadow-[2px_2px_10px_rgba(99,102,241,0.35)]">
-              <QrCode className="h-5 w-5" />
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="flex-shrink-0 flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-600 text-white shadow-xs">
+              <QrCode className="h-4 w-4" />
             </div>
             {!collapsed && (
               <div className="overflow-hidden">
-                <span className="block text-sm font-black text-slate-800 tracking-tight leading-tight whitespace-nowrap">
-                  AMS Admin
+                <span className="block text-sm font-bold text-slate-900 tracking-tight leading-tight whitespace-nowrap">
+                  AMS Portal
                 </span>
-                <span className="block text-[10px] uppercase tracking-wider bg-gradient-to-r from-sky-600 to-violet-600 bg-clip-text text-transparent font-black whitespace-nowrap">
-                  College Portal
+                <span className="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold whitespace-nowrap">
+                  Admin Suite
                 </span>
               </div>
             )}
           </div>
           {/* Mobile close — desktop hidden */}
           {!collapsed && (
-            <button onClick={onClose} className="p-1.5 rounded-xl text-slate-400 neu-btn hover:text-slate-600 lg:hidden">
+            <button onClick={onClose} className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 lg:hidden transition-colors">
               <X className="w-4 h-4" />
             </button>
           )}
         </div>
 
         {/* ── Navigation list ────────────────────────────── */}
-        <div className="flex-1 overflow-y-auto py-4 space-y-1 px-2">
+        <div className="flex-1 overflow-y-auto py-4 space-y-1 px-2.5">
           {!collapsed && (
-            <div className="px-2 pb-2 text-[10px] font-black uppercase tracking-wider text-slate-400">
-              Core Modules
+            <div className="px-3 pb-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+              Navigation
             </div>
           )}
 
@@ -109,14 +111,14 @@ export default function Sidebar({ isOpen, onClose, onCollapsedChange }) {
                 <div
                   key={item.name}
                   title={collapsed ? item.name : `${item.name} — coming soon`}
-                  className={`flex items-center rounded-2xl text-xs font-medium text-slate-400 cursor-not-allowed select-none opacity-50
-                    ${collapsed ? "justify-center p-3" : "px-3.5 py-2.5 gap-3"}`}
+                  className={`flex items-center rounded-xl text-xs font-medium text-slate-400 cursor-not-allowed select-none opacity-50
+                    ${collapsed ? "justify-center p-2.5" : "px-3 py-2 gap-2.5"}`}
                 >
                   <Icon className="w-4 h-4 flex-shrink-0" />
                   {!collapsed && (
                     <>
                       <span className="flex-1">{item.name}</span>
-                      <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-slate-200/60 text-slate-400">
+                      <span className="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-slate-100 text-slate-400">
                         Soon
                       </span>
                     </>
@@ -128,30 +130,30 @@ export default function Sidebar({ isOpen, onClose, onCollapsedChange }) {
             const isItemActive = location.pathname.startsWith(item.path);
             
             return (
-              <div key={item.name} className="space-y-1">
+              <div key={item.name} className="space-y-0.5">
                 <NavLink
                   to={item.subItems ? item.subItems[0].path : item.path}
                   title={collapsed ? item.name : undefined}
                   onClick={() => { if (window.innerWidth < 1024 && !item.subItems) onClose(); }}
                   className={({ isActive }) =>
-                    `flex items-center rounded-2xl text-xs font-bold transition-all
-                    ${collapsed ? "justify-center p-3" : "px-3.5 py-2.5 gap-3"}
+                    `flex items-center rounded-xl text-xs transition-all duration-150
+                    ${collapsed ? "justify-center p-2.5" : "px-3 py-2.5 gap-3"}
                     ${isItemActive
-                      ? "bg-gradient-to-r from-sky-500/10 via-indigo-500/10 to-violet-500/10 text-violet-700 shadow-[3px_3px_10px_rgba(166,185,215,0.3),-3px_-3px_10px_rgba(255,255,255,0.9)] border border-violet-200/60 font-extrabold"
-                      : "text-slate-600 hover:text-violet-600 hover:bg-white/60 border border-transparent"
+                      ? "bg-indigo-50/90 text-indigo-700 font-bold border-l-2 border-indigo-600 shadow-2xs"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/70 font-semibold"
                     }`
                   }
                 >
-                  <Icon className={`w-4 h-4 flex-shrink-0 transition-colors ${isItemActive ? "text-violet-600" : "text-slate-400"}`} />
+                  <Icon className={`w-4 h-4 flex-shrink-0 transition-colors ${isItemActive ? "text-indigo-600" : "text-slate-400 group-hover:text-slate-600"}`} />
                   {!collapsed && <span className="flex-1 truncate">{item.name}</span>}
                   {!collapsed && isItemActive && !item.subItems && (
-                    <span className="h-2 w-2 rounded-full bg-gradient-to-r from-sky-500 to-violet-600 shadow-[0_0_8px_rgba(139,92,246,0.8)] flex-shrink-0" />
+                    <span className="h-1.5 w-1.5 rounded-full bg-indigo-600 flex-shrink-0" />
                   )}
                 </NavLink>
 
                 {/* Sub Items */}
                 {item.subItems && isItemActive && (
-                  <div className={collapsed ? "space-y-2 mt-2 flex flex-col items-center border-t border-slate-100 pt-2" : "pl-10 pr-2 space-y-1 pt-1 mb-2"}>
+                  <div className={collapsed ? "space-y-1.5 mt-1.5 flex flex-col items-center border-t border-slate-100 pt-1.5" : "pl-9 pr-2 space-y-0.5 pt-1 mb-2 border-l border-slate-100 ml-5"}>
                     {item.subItems.map(sub => {
                       const SubIcon = sub.icon;
                       return (
@@ -161,14 +163,14 @@ export default function Sidebar({ isOpen, onClose, onCollapsedChange }) {
                         title={collapsed ? sub.name : undefined}
                         onClick={() => { if (window.innerWidth < 1024) onClose(); }}
                         className={({ isActive }) =>
-                          `${collapsed ? "flex items-center justify-center p-2.5 rounded-xl transition-all" : "block px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors"}
+                          `${collapsed ? "flex items-center justify-center p-2 rounded-lg transition-all" : "block px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors"}
                           ${isActive
-                            ? (collapsed ? "bg-violet-100 text-violet-700 shadow-sm" : "bg-violet-50 text-violet-700")
-                            : (collapsed ? "text-slate-400 hover:text-violet-600 hover:bg-slate-50" : "text-slate-500 hover:text-slate-700 hover:bg-slate-50")
+                            ? "bg-indigo-50/80 text-indigo-700 font-bold"
+                            : "text-slate-500 hover:text-slate-800 hover:bg-slate-50"
                           }`
                         }
                       >
-                        {collapsed ? <SubIcon className="w-4 h-4" /> : sub.name}
+                        {collapsed ? <SubIcon className="w-3.5 h-3.5" /> : sub.name}
                       </NavLink>
                     )})}
                   </div>
@@ -179,15 +181,14 @@ export default function Sidebar({ isOpen, onClose, onCollapsedChange }) {
         </div>
 
         {/* ── Floating collapse tab on the right edge ───── */}
-        {/* Desktop only — sticks out from the right side of the sidebar */}
         <button
           onClick={toggleCollapse}
           title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           className="hidden lg:flex absolute -right-3.5 top-1/2 -translate-y-1/2 z-50
-            w-7 h-14 items-center justify-center
-            bg-white border border-slate-200/80
-            rounded-r-xl shadow-[3px_0_12px_rgba(166,185,215,0.35)]
-            text-slate-400 hover:text-indigo-600 hover:bg-indigo-50
+            w-7 h-12 items-center justify-center
+            bg-white border border-slate-200/90
+            rounded-r-xl shadow-xs
+            text-slate-400 hover:text-slate-700 hover:bg-slate-50
             transition-all duration-200 group"
         >
           {collapsed

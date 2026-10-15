@@ -33,6 +33,8 @@ import DailyRegisterReport from "./pages/admin/reports/DailyRegisterReport";
 import StudentProfileReport from "./pages/admin/reports/StudentProfileReport";
 import TrendsAnalyticsReport from "./pages/admin/reports/TrendsAnalyticsReport";
 import DefaultersReport from "./pages/admin/reports/DefaultersReport";
+import SpecialTrainingReportsPage from "./pages/admin/reports/SpecialTrainingReportsPage";
+import TrainingAttendancePage from "./pages/teacher/TrainingAttendancePage";
 
 
 import { ToastProvider } from "./context/ToastContext";
@@ -107,6 +109,7 @@ export default function App() {
                   <Route path="student" element={<StudentProfileReport />} />
                   <Route path="trends" element={<TrendsAnalyticsReport />} />
                   <Route path="defaulters" element={<DefaultersReport />} />
+                  <Route path="training" element={<SpecialTrainingReportsPage />} />
                 </Route>
                 <Route path="institution" element={<InstitutionSetupPage />} />
               </Route>
@@ -119,6 +122,7 @@ export default function App() {
                 <Route path="dashboard" element={<TeacherDashboardPage />} />
                 <Route path="timetable" element={<TeacherTimetablePage />} />
                 <Route path="today" element={<TeacherTodayClassesPage />} />
+                <Route path="training-attendance" element={<TrainingAttendancePage />} />
                 <Route path="attendance" element={<AttendanceRegistryPage />} />
                 <Route path="attendance-history" element={<TeacherAttendanceHistoryPage />} />
                 <Route path="history/session/:sessionId" element={<TeacherSessionReportPage />} />

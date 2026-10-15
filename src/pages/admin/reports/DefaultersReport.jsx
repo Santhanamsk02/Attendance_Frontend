@@ -1,10 +1,14 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { apiClient } from "../../../services/api";
 import { reportsService, downloadBlob } from "../../../services/reportsService";
-import { Download, AlertTriangle, ChevronLeft, ChevronRight, Search, Filter, RotateCcw } from "lucide-react";
+import { Download, AlertTriangle, ChevronLeft, ChevronRight, Search, Filter, RotateCcw, CheckCircle } from "lucide-react";
 
 export default function DefaultersReport() {
-  const [threshold, setThreshold] = useState(75);
+  const [threshold, setThreshold] = useState("");
+  const [absentDays, setAbsentDays] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+  
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
@@ -79,7 +83,10 @@ export default function DefaultersReport() {
       setLoading(true);
       reportsService
         .getDefaulters({
-          threshold,
+          threshold: threshold || undefined,
+          absent_days: absentDays || undefined,
+          from_date: fromDate || undefined,
+          to_date: toDate || undefined,
           section: filters.section || undefined,
           department_id: filters.departmentId || undefined,
           batch_id: filters.batchId || undefined,
@@ -87,11 +94,20 @@ export default function DefaultersReport() {
           page: p,
           page_size: PAGE_SIZE,
         })
-        .then((r) => { setData(r.data); setPage(p); })
+        .then((r) => { 
+          setData(r.data); 
+          setPage(p); 
+          if (r.data?.summary?.from_date) {
+            setFromDate(r.data.summary.from_date);
+          }
+          if (r.data?.summary?.to_date && !toDate) {
+            setToDate(r.data.summary.to_date);
+          }
+        })
         .catch(() => {})
         .finally(() => setLoading(false));
     },
-    [threshold, filters, searchTerm]
+    [threshold, absentDays, fromDate, toDate, filters, searchTerm]
   );
 
   const handleFilterChange = (key, value) => {
@@ -110,18 +126,30 @@ export default function DefaultersReport() {
   const handleResetFilters = () => {
     setFilters({ departmentId: "", batchId: "", section: "" });
     setSearchTerm("");
+    setThreshold("");
+    setAbsentDays("");
+    setFromDate("");
+    setToDate("");
   };
 
   const handleExport = async () => {
     try {
       const r = await reportsService.exportDefaulters({
-        threshold,
+        threshold: threshold || undefined,
+        absent_days: absentDays || undefined,
+        from_date: fromDate || undefined,
+        to_date: toDate || undefined,
         section: filters.section || undefined,
         department_id: filters.departmentId || undefined,
         batch_id: filters.batchId || undefined,
         query: searchTerm || undefined,
       });
-      downloadBlob(r.data, `defaulters_${threshold}pct.csv`);
+      
+      let filename = "defaulters.csv";
+      if (threshold) filename = `defaulters_below_${threshold}pct.csv`;
+      else if (absentDays) filename = `defaulters_${absentDays}_absent.csv`;
+      
+      downloadBlob(r.data, filename);
     } catch {}
   };
 
@@ -143,7 +171,7 @@ export default function DefaultersReport() {
           </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
           <div>
             <label className="block text-[11px] font-bold text-slate-400 mb-1">Search Name / Roll No</label>
             <div className="relative">
@@ -157,19 +185,50 @@ export default function DefaultersReport() {
               />
             </div>
           </div>
-          
           <div>
-            <label className="block text-[11px] font-bold text-slate-400 mb-1">Threshold %</label>
-            <div className="flex items-center gap-2 h-9">
-              <input
-                type="range" min={50} max={90} step={5} value={threshold}
-                onChange={(e) => setThreshold(Number(e.target.value))}
-                className="w-full"
-              />
-              <span className="text-sm font-bold text-slate-700 w-10">{threshold}%</span>
-            </div>
+            <label className="block text-[11px] font-bold text-slate-400 mb-1">From Date</label>
+            <input
+              type="date"
+              value={fromDate}
+              onChange={(e) => setFromDate(e.target.value)}
+              className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs font-semibold focus:outline-none focus:border-indigo-400"
+            />
           </div>
+          <div>
+            <label className="block text-[11px] font-bold text-slate-400 mb-1">To Date</label>
+            <input
+              type="date"
+              value={toDate}
+              onChange={(e) => setToDate(e.target.value)}
+              className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs font-semibold focus:outline-none focus:border-indigo-400"
+            />
+          </div>
+          <div>
+             <label className="block text-[11px] font-bold text-slate-400 mb-1">Attendance Percentage (≤)</label>
+             <input
+               type="number"
+               min="0"
+               max="100"
+               value={threshold}
+               onChange={e => setThreshold(e.target.value)}
+               placeholder="e.g. 75"
+               className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs font-semibold focus:outline-none focus:border-indigo-400"
+             />
+          </div>
+        </div>
 
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div>
+             <label className="block text-[11px] font-bold text-slate-400 mb-1">Absent Days (≥)</label>
+             <input
+               type="number"
+               min="0"
+               value={absentDays}
+               onChange={e => setAbsentDays(e.target.value)}
+               placeholder="e.g. 5"
+               className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs font-semibold focus:outline-none focus:border-indigo-400"
+             />
+          </div>
           <div>
             <label className="block text-[11px] font-bold text-slate-400 mb-1">Department</label>
             <select
@@ -251,7 +310,7 @@ export default function DefaultersReport() {
         <div className="flex items-center gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
           <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0" />
           <p className="text-sm text-amber-800">
-            <span className="font-bold">{data.total} students</span> below {threshold}% attendance threshold.
+            <span className="font-bold">{data.total} students</span> found matching your filter criteria.
           </p>
         </div>
       )}
@@ -278,7 +337,9 @@ export default function DefaultersReport() {
                 {data.data.length === 0 ? (
                   <tr>
                     <td colSpan={Object.values(visibleColumns).filter(Boolean).length} className="px-4 py-12 text-center text-emerald-600 font-medium">
-                      ✓ No students below {threshold}% threshold
+                      <div className="flex items-center justify-center gap-1.5">
+                        <CheckCircle className="w-4 h-4" /> No students found below the specified thresholds
+                      </div>
                     </td>
                   </tr>
                 ) : data.data.map((s) => (
@@ -332,7 +393,7 @@ export default function DefaultersReport() {
           </div>
           <h3 className="text-lg font-bold text-slate-800">Defaulters Analysis</h3>
           <p className="text-sm text-slate-500 max-w-md mt-1 mb-6 leading-relaxed">
-            Configure your filters and click "Find Defaulters" to identify students whose attendance has dropped below your required threshold.
+            Configure your filters and click "Find Defaulters" to identify students whose attendance has dropped below your required thresholds.
           </p>
         </div>
       )}

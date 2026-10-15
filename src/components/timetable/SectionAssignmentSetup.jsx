@@ -208,8 +208,8 @@ export default function SectionAssignmentSetup({ context, onProceed, onBack }) {
                     <div className="mt-4 px-4 py-2.5 rounded-2xl bg-rose-50 border border-rose-200 text-xs font-semibold text-rose-600">{error}</div>
                 )}
                 {saved && !error && (
-                    <div className="mt-4 px-4 py-2.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs font-semibold text-emerald-600">
-                        ✓ Assignments saved successfully!
+                    <div className="mt-4 px-4 py-2.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs font-semibold text-emerald-600 flex items-center gap-1.5">
+                        <CheckCircle className="w-3.5 h-3.5" /> Assignments saved successfully!
                     </div>
                 )}
             </div>

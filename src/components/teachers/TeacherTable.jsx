@@ -56,19 +56,19 @@ export default function TeacherTable({
     }
 
     return (
-        <div className="bg-white rounded-3xl neu-card overflow-hidden">
+        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
             <div className="overflow-x-auto">
                 <table className="modern-table">
                     <thead>
                         <tr>
-                            <th>
+                            <th className="w-10 text-center">
                                 <input
                                     ref={headerCheckboxRef}
                                     type="checkbox"
                                     checked={isAllSelected}
                                     onChange={onToggleSelectAll}
                                     aria-label="Select all teachers on this page"
-                                    className="h-4 w-4 rounded-md border-slate-300 text-sky-600 focus:ring-sky-500 cursor-pointer shadow-[inset_1px_1px_2px_rgba(166,185,210,0.4)]"
+                                    className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
                                 />
                             </th>
                             <th>Employee ID</th>
@@ -77,10 +77,10 @@ export default function TeacherTable({
                             <th>Department</th>
                             <th>Designation</th>
                             <th>Status</th>
-                            <th>Actions</th>
+                            <th className="text-right">Actions</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100/90">
+                    <tbody className="divide-y divide-slate-100 font-medium">
                         {teachers.map((teacher) => {
                             const isSelected = selectedIds.includes(teacher.id);
 
@@ -88,12 +88,12 @@ export default function TeacherTable({
                                 <tr
                                     key={teacher.id}
                                     onClick={() => onToggleSelect(teacher.id)}
-                                    className={`transition-colors cursor-pointer group ${isSelected
-                                        ? "bg-sky-50/80 text-slate-900"
-                                        : "hover:bg-sky-50/30"
+                                    className={`transition-colors cursor-pointer ${isSelected
+                                        ? "bg-indigo-50/60 text-slate-900"
+                                        : "hover:bg-slate-50/70"
                                         }`}
                                 >
-                                    <td className="w-12  text-center"
+                                    <td className="w-10 text-center"
                                         onClick={(e) => e.stopPropagation()}
                                     >
                                         <input
@@ -101,15 +101,15 @@ export default function TeacherTable({
                                             checked={isSelected}
                                             onChange={() => onToggleSelect(teacher.id)}
                                             aria-label={`Select teacher ${teacher.name}`}
-                                            className="h-4 w-4 rounded-md border-slate-300 text-sky-600 focus:ring-sky-500 cursor-pointer shadow-[inset_1px_1px_2px_rgba(166,185,210,0.4)]"
+                                            className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
                                         />
                                     </td>
 
                                     <td>
                                         <span
-                                            className={`inline-flex items-center px-3 py-1 rounded-xl text-xs font-mono font-bold transition-all ${isSelected
-                                                ? "bg-sky-200/80 text-sky-900 shadow-[inset_1px_1px_3px_rgba(14,165,233,0.4)]"
-                                                : "neu-badge-blue group-hover:shadow-[0_2px_8px_rgba(14,165,233,0.25)]"
+                                            className={`inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-mono font-bold transition-all ${isSelected
+                                                ? "bg-indigo-100 text-indigo-900 border border-indigo-200"
+                                                : "bg-slate-100 text-slate-800 border border-slate-200/80"
                                                 }`}
                                         >
                                             {teacher.employee_id}
@@ -117,7 +117,7 @@ export default function TeacherTable({
                                     </td>
 
                                     <td>
-                                        <div className="font-bold text-slate-800 leading-tight">
+                                        <div className="font-bold text-slate-900 leading-tight">
                                             {teacher.name}
                                         </div>
                                     </td>
@@ -126,7 +126,7 @@ export default function TeacherTable({
                                         <div className="space-y-0.5">
                                             {teacher.email ? (
                                                 <div className="flex items-center gap-1.5 text-slate-600 truncate max-w-[200px] font-medium">
-                                                    <Mail className="w-3.5 h-3.5 text-sky-500 flex-shrink-0" />
+                                                    <Mail className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
                                                     <span className="truncate" title={teacher.email}>
                                                         {teacher.email}
                                                     </span>
@@ -145,7 +145,7 @@ export default function TeacherTable({
 
                                     <td>
                                         <span
-                                            className="inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-bold bg-[#f0f5fa] text-slate-700 border border-slate-200/60 shadow-[inset_1px_1px_2px_rgba(166,185,210,0.3)]"
+                                            className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200"
                                             title={teacher.department?.name || teacher.department_id}
                                         >
                                             {teacher.department ? teacher.department.code : getDepartmentShort(teacher.department_id)}
@@ -155,17 +155,17 @@ export default function TeacherTable({
                                         </span>
                                     </td>
 
-                                    <td className="text-center text-xs font-semibold">
+                                    <td className="text-xs font-semibold text-slate-700">
                                         {teacher.designation || "-"}
                                     </td>
 
-                                    <td className="text-center">
+                                    <td>
                                         {teacher.status === "active" ? (
-                                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/60 shadow-[inset_1px_1px_2px_rgba(16,185,129,0.2)]">
+                                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/70">
                                                 <UserCheck className="w-3 h-3" /> Active
                                             </span>
                                         ) : (
-                                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200 shadow-[inset_1px_1px_2px_rgba(100,116,139,0.2)]">
+                                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-600 border border-slate-200">
                                                 <UserX className="w-3 h-3" /> Inactive
                                             </span>
                                         )}
@@ -174,17 +174,17 @@ export default function TeacherTable({
                                     <td className="text-right"
                                         onClick={(e) => e.stopPropagation()}
                                     >
-                                        <div className="flex items-center justify-end gap-2">
+                                        <div className="flex items-center justify-end gap-1.5">
                                             <button
                                                 onClick={() => onEdit(teacher)}
-                                                className="p-1.5 rounded-xl neu-btn text-slate-500 hover:text-sky-600"
+                                                className="p-1.5 rounded-lg border border-slate-200 hover:border-indigo-200 hover:bg-indigo-50 text-slate-500 hover:text-indigo-600 transition-colors shadow-2xs"
                                                 title="Edit Teacher"
                                             >
                                                 <Edit2 className="w-3.5 h-3.5" />
                                             </button>
                                             <button
                                                 onClick={() => onDelete(teacher)}
-                                                className="p-1.5 rounded-xl neu-btn text-slate-500 hover:text-rose-600"
+                                                className="p-1.5 rounded-lg border border-slate-200 hover:border-rose-200 hover:bg-rose-50 text-slate-500 hover:text-rose-600 transition-colors shadow-2xs"
                                                 title="Delete Teacher"
                                             >
                                                 <Trash2 className="w-3.5 h-3.5" />

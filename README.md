@@ -2,7 +2,7 @@
 
 <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" alt="React Logo" width="120" />
 
-# 🚀 Student Attendance Management System - Web Portal
+# Student Attendance Management System - Web Portal
 
 ### "A Powerful, Modern, and Scalable Web Solution for Institutional Attendance & Analytics"
 
@@ -29,7 +29,7 @@ An enterprise-grade, highly responsive web dashboard for administrators and facu
 
 ---
 
-## 🌟 Project Overview
+## Project Overview
 
 Managing institutional attendance, faculty assignments, and complex overlapping timetables requires a robust, high-performance system. 
 
@@ -37,42 +37,42 @@ This **Frontend Web Portal** is engineered to provide a lightning-fast, highly s
 
 | Category | Details |
 |---|---|
-| 🎯 **Purpose** | Institutional Data & Attendance Management |
-| 👥 **Users** | College Administrators, Department Heads, Faculty |
-| 🛠 **Platform** | Modern Web Browsers (Chrome, Safari, Firefox, Edge) |
-| ⚡ **Performance** | Optimized rendering with React Memo and Vite Build |
-| 🎨 **Design** | Glassmorphism UI powered by Tailwind CSS |
+| **Purpose** | Institutional Data & Attendance Management |
+| **Users** | College Administrators, Department Heads, Faculty |
+| **Platform** | Modern Web Browsers (Chrome, Safari, Firefox, Edge) |
+| **Performance** | Optimized rendering with React Memo and Vite Build |
+| **Design** | Glassmorphism UI powered by Tailwind CSS |
 
 ---
 
-## ✨ Key Features
+## Key Features
 
-### 🔐 Authentication & RBAC
+### Authentication & RBAC
 - **Secure Login:** JWT-based stateless authentication.
 - **Role-Based Access Control:** Distinct dashboard experiences for Admins vs. Teachers.
 - **Route Guards:** Robust protection of sensitive administrative endpoints.
 
-### 📊 Real-Time Dashboard & Analytics
+### Real-Time Dashboard & Analytics
 - **Live Metrics:** Total students, faculty, departments, and active classes.
 - **Data Visualization:** Interactive charts for attendance trends.
 - **Recent Activity:** Real-time tables tracking latest attendance logs.
 
-### 👥 Comprehensive Entity Management
+### Comprehensive Entity Management
 - **Student Directory:** Pagination, search, filtering, and bulk import capabilities.
 - **Teacher Roster:** Manage faculty profiles, assignments, and verification statuses.
 - **Subject Catalog:** CRUD operations for institutional curriculum.
 
-### 📅 Advanced Timetable & Scheduling
+### Advanced Timetable & Scheduling
 - **Dynamic Grids:** Visual calendar UI for assigning teachers to subjects/periods.
 - **Calendar Overrides:** Specialized logic to handle holidays or custom day-order schedules.
 
-### 📱 Premium UI/UX & Responsive Design
+### Premium UI/UX & Responsive Design
 - **Glassmorphism Components:** Modern, translucent layouts.
 - **100% Mobile Responsive:** Fluid scaling across phones, tablets, and massive desktops.
 
 ---
 
-## 🏗️ Frontend System Architecture
+## ️ Frontend System Architecture
 
 ```mermaid
 graph TD
@@ -102,7 +102,7 @@ graph TD
 
 ---
 
-## 🔄 Application Flow
+## Application Flow
 
 ```mermaid
 sequenceDiagram
@@ -137,21 +137,21 @@ sequenceDiagram
 
 ---
 
-## 🧠 Frontend Architecture
+## Frontend Architecture
 
 This web application utilizes a strict modular, component-based architecture for supreme scalability.
 
 | Layer | Responsibility | Technologies |
 |---|---|---|
-| 🎨 **UI Layer** | Presentation and visual aesthetics | `Tailwind CSS`, `Lucide React` |
-| 🧩 **Components** | Atomic, highly reusable generic UI blocks | `React Functional Components` |
-| 🧠 **State** | Application state and global variables | `React Context API`, `Custom Hooks` |
-| 🌐 **API Service** | Dedicated HTTP client classes | `Fetch / Axios instances` |
-| 🔐 **Security** | Route protection and token injection | `React Router Guards` |
+| **UI Layer** | Presentation and visual aesthetics | `Tailwind CSS`, `Lucide React` |
+| **Components** | Atomic, highly reusable generic UI blocks | `React Functional Components` |
+| **State** | Application state and global variables | `React Context API`, `Custom Hooks` |
+| **API Service** | Dedicated HTTP client classes | `Fetch / Axios instances` |
+| **Security** | Route protection and token injection | `React Router Guards` |
 
 ---
 
-## 🧩 Component Architecture
+## Component Architecture
 
 ```mermaid
 graph TD
@@ -179,7 +179,7 @@ graph TD
 
 ---
 
-## 🛠️ Technology Stack
+## ️ Technology Stack
 
 | Technology | Purpose | Why Used |
 |---|---|---|
@@ -192,7 +192,7 @@ graph TD
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```text
 src/
@@ -216,7 +216,7 @@ src/
 
 ---
 
-## 🔌 API Integration Architecture
+## API Integration Architecture
 
 The frontend communicates with the backend via isolated Service modules. Each logical domain (Auth, Students, Timetable) has its own dedicated service file containing async fetch wrappers.
 
@@ -241,7 +241,7 @@ export const studentService = {
 
 ---
 
-## 🔐 Authentication Flow
+## Authentication Flow
 
 ```mermaid
 graph TD
@@ -258,7 +258,7 @@ graph TD
 
 ---
 
-## 🎨 UI/UX Design Philosophy
+## UI/UX Design Philosophy
 
 - **Glassmorphism:** Heavy utilization of `backdrop-blur` and translucent white backgrounds to create a premium, depth-rich interface.
 - **Micro-Interactions:** Subtle hover states, transition-all animations, and active scaling on buttons to provide tactile feedback.
@@ -266,7 +266,7 @@ graph TD
 
 ---
 
-## 📱 Responsive Design
+## Responsive Design
 
 This web portal is strictly designed mobile-first, gracefully expanding to utilize massive desktop real-estate.
 
@@ -278,7 +278,7 @@ This web portal is strictly designed mobile-first, gracefully expanding to utili
 
 ---
 
-## ⚡ Performance Optimization
+## Performance Optimization
 
 - **React Router Lazy Loading:** Code-splitting routes so users only download the JavaScript they need for the page they are viewing.
 - **Custom `useDebounce` Hooks:** Drastically reduces API spam when typing in search and filter inputs.
@@ -286,7 +286,7 @@ This web portal is strictly designed mobile-first, gracefully expanding to utili
 
 ---
 
-## ⚙️ Installation & Setup
+## ️ Installation & Setup
 
 ### 1. Clone Repository
 ```bash
@@ -317,7 +317,7 @@ npm run dev
 
 ---
 
-## 🚀 Production Build
+## Production Build
 
 To build the application for a production environment:
 
@@ -333,7 +333,7 @@ npm run preview
 
 ---
 
-## 🌍 Deployment
+## Deployment
 
 ```mermaid
 graph LR
@@ -346,7 +346,7 @@ graph LR
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
@@ -356,7 +356,7 @@ graph LR
 
 ---
 
-## 👨💻 Developer
+## Developer
 
 **Name:** Santhanam  
 **Role:** Full-Stack Engineer  
@@ -365,12 +365,12 @@ graph LR
 
 ---
 
-## 📄 License
+## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
 
 ---
 
 <div align="center">
-  <i>If you found this dashboard useful, please consider giving the repository a ⭐!</i>
+  <i>If you found this dashboard useful, please consider giving the repository a !</i>
 </div>

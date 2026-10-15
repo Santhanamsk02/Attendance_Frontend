@@ -6,6 +6,7 @@ import {
     X,
     RefreshCw,
     BookOpen,
+    Trash2,
 } from "lucide-react";
 import SubjectTable from "../../components/subjects/SubjectTable";
 import SubjectFilters from "../../components/subjects/SubjectFilters";
@@ -42,6 +43,7 @@ export default function SubjectsPage() {
     const [editingSubject, setEditingSubject] = useState(null);
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);
     const [isBulkDeleteOpen, setIsBulkDeleteOpen] = useState(false);
+    const [isDeleteAllOpen, setIsDeleteAllOpen] = useState(false);
     const [deletingSubject, setDeletingSubject] = useState(null);
     const [isImportOpen, setIsImportOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -62,7 +64,7 @@ export default function SubjectsPage() {
             setTotal(data.total);
             setTotalPages(data.total_pages);
         } catch (err) {
-            toast.error(err.response?.data?.detail || "Failed to fetch subjects");
+            toast.error(err.message || "Failed to fetch subjects");
         } finally {
             setLoading(false);
         }
@@ -117,7 +119,7 @@ export default function SubjectsPage() {
             setEditingSubject(null);
             fetchSubjects();
         } catch (err) {
-            toast.error(err.response?.data?.detail || "Failed to save subject");
+            toast.error(err.message || "Failed to save subject");
         } finally {
             setIsSubmitting(false);
         }
@@ -134,7 +136,7 @@ export default function SubjectsPage() {
             setSelectedIds((prev) => prev.filter((id) => id !== deletingSubject.id));
             fetchSubjects();
         } catch (err) {
-            toast.error(err.response?.data?.detail || "Failed to delete subject");
+            toast.error(err.message || "Failed to delete subject");
         } finally {
             setIsSubmitting(false);
         }
@@ -150,7 +152,22 @@ export default function SubjectsPage() {
             setSelectedIds([]);
             fetchSubjects();
         } catch (err) {
-            toast.error(err.response?.data?.detail || "Failed to delete subjects");
+            toast.error(err.message || "Failed to delete subjects");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const handleConfirmDeleteAll = async () => {
+        setIsSubmitting(true);
+        try {
+            const res = await subjectService.deleteAll();
+            toast.success(res.message || `Deleted all ${res.deleted_count} subject(s)`);
+            setIsDeleteAllOpen(false);
+            setSelectedIds([]);
+            fetchSubjects();
+        } catch (err) {
+            toast.error(err.message || "Failed to delete all subjects");
         } finally {
             setIsSubmitting(false);
         }
@@ -169,12 +186,21 @@ export default function SubjectsPage() {
                     </p>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-3">
+                <div className="flex flex-wrap items-center gap-2.5">
+                    <button
+                        onClick={() => setIsDeleteAllOpen(true)}
+                        disabled={total === 0 || loading}
+                        className="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-semibold text-rose-600 hover:text-rose-700 bg-rose-50/70 hover:bg-rose-100/80 rounded-xl transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed border border-rose-200/60 shadow-2xs"
+                        title="Delete all subjects"
+                    >
+                        <Trash2 className="w-4 h-4 text-rose-500" />
+                        Delete All
+                    </button>
                     <button
                         onClick={() => setIsImportOpen(true)}
-                        className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-slate-700 neu-btn rounded-2xl"
+                        className="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl shadow-2xs transition-all duration-150"
                     >
-                        <Upload className="w-4 h-4 text-sky-600" />
+                        <Upload className="w-4 h-4 text-slate-500" />
                         Import Subjects
                     </button>
                     <button
@@ -182,7 +208,7 @@ export default function SubjectsPage() {
                             setEditingSubject(null);
                             setIsAddOpen(true);
                         }}
-                        className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold neu-btn-primary rounded-2xl"
+                        className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 rounded-xl shadow-xs transition-all duration-150"
                     >
                         <Plus className="w-4 h-4" />
                         Add Subject
@@ -192,20 +218,20 @@ export default function SubjectsPage() {
 
             {/* Search & Actions Bar */}
             <div className="flex flex-col sm:flex-row items-center gap-3">
-                {/* Neumorphic Inset Search Bar */}
+                {/* Modern Inset Search Bar */}
                 <div className="relative flex-1 w-full">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-sky-600" />
+                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                     <input
                         type="text"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         placeholder="Search by subject code, name, or department..."
-                        className="w-full pl-11 pr-10 py-3 rounded-2xl neu-input text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none"
+                        className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-200 bg-white text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 shadow-2xs transition-all duration-150"
                     />
                     {search && (
                         <button
                             onClick={() => setSearch("")}
-                            className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-200/50"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100"
                         >
                             <X className="w-3.5 h-3.5" />
                         </button>
@@ -216,7 +242,7 @@ export default function SubjectsPage() {
                 <button
                     onClick={fetchSubjects}
                     disabled={loading}
-                    className="p-3 rounded-2xl neu-btn text-slate-600 hover:text-sky-600 disabled:opacity-50"
+                    className="p-2.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 hover:text-slate-900 disabled:opacity-50 shadow-2xs transition-all duration-150"
                     title="Refresh Directory"
                 >
                     <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
@@ -291,6 +317,18 @@ export default function SubjectsPage() {
                 title="Delete Multiple Subjects"
                 message={`Are you sure you want to delete ${selectedIds.length} selected subjects?`}
                 isLoading={isSubmitting}
+            />
+
+            {/* Delete All Subjects Confirmation Dialog */}
+            <ConfirmDialog
+                isOpen={isDeleteAllOpen}
+                onClose={() => setIsDeleteAllOpen(false)}
+                onConfirm={handleConfirmDeleteAll}
+                title="Delete All Subjects"
+                message={`Are you sure you want to permanently delete ALL ${total} subject(s)? This action cannot be undone and will delete associated timetable entries and section assignments.`}
+                confirmText={`Delete All (${total}) Subjects`}
+                isLoading={isSubmitting}
+                variant="danger"
             />
 
             <SubjectImportModal

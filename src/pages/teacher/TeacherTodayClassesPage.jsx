@@ -1,26 +1,51 @@
 import React, { useState, useEffect } from "react";
-import { Clock, CheckCircle2, ChevronRight, QrCode, CalendarOff, RefreshCw, AlertCircle } from "lucide-react";
+import {
+  Clock,
+  CheckCircle2,
+  ChevronRight,
+  QrCode,
+  CalendarOff,
+  RefreshCw,
+  AlertCircle,
+  Award,
+  Sparkles,
+  Users,
+  MapPin,
+  GraduationCap,
+} from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { apiClient } from "../../services/api";
+import { useAuth } from "../../context/AuthContext";
+import specialTrainingService from "../../services/specialTrainingService";
 
 export default function TeacherTodayClassesPage() {
+    const { user } = useAuth();
     const [data, setData] = useState(null);
+    const [trainingSessions, setTrainingSessions] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchToday = async () => {
             try {
-                const res = await apiClient.get("/teacher/today");
-                setData(res.data);
+                const [todayRes, trainingRes] = await Promise.allSettled([
+                    apiClient.get("/teacher/today"),
+                    specialTrainingService.getTeacherTodayTrainings(user?.id)
+                ]);
+                if (todayRes.status === "fulfilled") {
+                    setData(todayRes.value.data);
+                }
+                if (trainingRes.status === "fulfilled") {
+                    setTrainingSessions(trainingRes.value.data || []);
+                }
             } catch (err) {
-                console.error("Failed to fetch today's classes");
+                console.error("Failed to fetch today's classes", err);
             } finally {
                 setLoading(false);
             }
         };
         fetchToday();
-    }, []);
+    }, [user?.id]);
 
     if (loading) return <div className="p-8 text-center animate-pulse text-slate-500 font-bold">Loading today's schedule...</div>;
 
@@ -104,6 +129,108 @@ export default function TeacherTodayClassesPage() {
             </div>
 
             <div className="space-y-4">
+                {/* Final Year Special Training Section */}
+                {trainingSessions.length > 0 && (
+                    <div className="space-y-3 mb-6">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <span className="p-1.5 rounded-lg bg-indigo-50 text-indigo-600 border border-indigo-100">
+                                    <Award className="w-4 h-4" />
+                                </span>
+                                <h2 className="text-sm font-black text-slate-800 tracking-tight uppercase">
+                                    Final Year Special Training Sessions
+                                </h2>
+                                <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-indigo-100 text-indigo-700">
+                                    {trainingSessions.length} Scheduled Today
+                                </span>
+                            </div>
+                            <span className="text-[11px] font-bold text-slate-400">
+                                Shared Timetable • Multi-Dept Concurrent Attendance
+                            </span>
+                        </div>
+
+                        {trainingSessions.map((tr) => (
+                            <div
+                                key={tr.slot_id}
+                                className="p-5 md:p-6 rounded-2xl bg-gradient-to-br from-white via-indigo-50/20 to-violet-50/30 border border-indigo-200/80 shadow-md shadow-indigo-100/40 relative overflow-hidden transition-all hover:shadow-lg"
+                            >
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full blur-2xl pointer-events-none" />
+
+                                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
+                                    <div className="space-y-2 flex-1">
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            <span className="px-2.5 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-xs">
+                                                Period {tr.period_id}
+                                            </span>
+                                            <span className="px-2.5 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-slate-100 text-slate-700">
+                                                {tr.batch_name || "Final Year"}
+                                            </span>
+                                            <span className="px-2.5 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                                {tr.present_count} / {tr.enrolled_count} Present
+                                            </span>
+                                        </div>
+
+                                        <div>
+                                            <h3 className="text-lg font-black text-slate-900 leading-tight">
+                                                {tr.training_name}
+                                            </h3>
+                                            {tr.topic && (
+                                                <p className="text-xs font-bold text-indigo-700 mt-0.5">
+                                                    Topic: {tr.topic}
+                                                </p>
+                                            )}
+                                        </div>
+
+                                        <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs font-semibold text-slate-600">
+                                            <div className="flex items-center gap-1.5">
+                                                <Clock className="w-3.5 h-3.5 text-indigo-500" />
+                                                <span className="font-mono font-bold text-slate-800">
+                                                    {formatTime12Hour(`${tr.start_time} - ${tr.end_time}`)}
+                                                </span>
+                                            </div>
+                                            <div className="flex items-center gap-1.5">
+                                                <GraduationCap className="w-3.5 h-3.5 text-indigo-500" />
+                                                <span>Trainer: <strong className="text-slate-800">{tr.trainer_name || "Assigned Trainer"}</strong></span>
+                                            </div>
+                                            {tr.venue && (
+                                                <div className="flex items-center gap-1.5">
+                                                    <MapPin className="w-3.5 h-3.5 text-indigo-500" />
+                                                    <span>Venue: <strong className="text-slate-800">{tr.venue}</strong></span>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {tr.assigned_staff && tr.assigned_staff.length > 0 && (
+                                            <div className="text-[11px] font-semibold text-slate-500 flex items-center gap-1.5 pt-1">
+                                                <Users className="w-3 h-3 text-indigo-500" />
+                                                <span>
+                                                    Assigned Staff: <strong className="text-slate-700">{tr.assigned_staff.join(", ")}</strong>
+                                                </span>
+                                                <span className="text-[10px] text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-100 ml-1">
+                                                    Concurrent Marking Enabled
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div className="flex flex-col sm:flex-row md:flex-col justify-center gap-2">
+                                        <button
+                                            onClick={() =>
+                                                navigate(
+                                                    `/teacher/training-attendance?trainingId=${tr.training_id}&periodId=${tr.period_id}&date=${tr.date}`
+                                                )
+                                            }
+                                            className="px-5 py-3 rounded-xl font-black text-xs text-white bg-gradient-to-r from-indigo-600 via-indigo-700 to-violet-700 hover:from-indigo-500 hover:to-violet-600 shadow-md shadow-indigo-500/25 transition-all flex items-center justify-center gap-2 hover:scale-102"
+                                        >
+                                            <QrCode className="w-4 h-4" />
+                                            Take Training Attendance
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
                 {classes.map((cls, idx) => {
                     if (cls.type === 'break') {
                         return (
@@ -213,7 +340,7 @@ export default function TeacherTodayClassesPage() {
                     );
                 })}
 
-                {classes.length === 0 && (
+                {classes.length === 0 && trainingSessions.length === 0 && (
                     <div className="p-12 text-center text-slate-500 font-bold bg-white rounded-3xl neu-inset border border-slate-200/50 flex flex-col items-center">
                         <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
                             <CheckCircle2 className="w-8 h-8 text-emerald-500" />

@@ -25,7 +25,8 @@ import {
   ListFilter,
   CheckSquare,
   Search,
-  Trash2
+  Trash2,
+  X
 } from "lucide-react";
 import { apiClient } from "../../services/api";
 import { calendarService } from "../../services/calendarService";
@@ -1488,7 +1489,9 @@ function PeriodCellOverrideModal({ periodItem, cellEntry, overrideType, teachers
               {cellEntry ? `Current: ${cellEntry.subject_code} (${cellEntry.teacher_name || 'Faculty'})` : 'Unassigned Period'}
             </p>
           </div>
-          <button onClick={onClose} className="p-2 text-slate-400 hover:text-slate-600 rounded-2xl bg-slate-100">✕</button>
+          <button onClick={onClose} className="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-100 transition-colors">
+            <X className="w-4 h-4" />
+          </button>
         </div>
 
         <form onSubmit={handleApply} className="space-y-4 text-xs">

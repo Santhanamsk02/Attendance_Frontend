@@ -14,6 +14,7 @@ import {
     BadgeCheck,
     ChevronLeft,
     ChevronRight,
+    Award,
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 
@@ -21,6 +22,7 @@ const NAV_ITEMS = [
     { name: "Dashboard", path: "/teacher/dashboard", icon: LayoutDashboard },
     { name: "My Timetable", path: "/teacher/timetable", icon: CalendarDays },
     { name: "Today's Classes", path: "/teacher/today", icon: CalendarClock },
+    { name: "Special Training", path: "/teacher/training-attendance", icon: Award },
     { name: "Take Attendance", path: "/teacher/attendance", icon: QrCode },
     { name: "Attendance History", path: "/teacher/attendance-history", icon: History },
     { name: "My Subjects", path: "/teacher/subjects", icon: BookOpen },
@@ -47,25 +49,25 @@ export default function TeacherSidebar({ isOpen, onClose, onCollapsedChange }) {
             />
 
             <aside
-                className={`fixed top-0 bottom-0 left-0 z-50 flex flex-col bg-white/90 backdrop-blur-2xl border-r border-slate-200/60 shadow-[6px_0_24px_rgba(16,185,129,0.1)] transition-all duration-300 ease-in-out
+                className={`fixed top-0 bottom-0 left-0 z-50 flex flex-col bg-white border-r border-slate-200/80 shadow-[0_4px_24px_rgba(15,23,42,0.04)] transition-all duration-300 ease-in-out
                     ${collapsed ? "lg:w-16 w-16" : "lg:w-64 w-64"}
                     ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
                 `}
             >
-                <div className={`flex h-16 items-center border-b border-slate-200/50 bg-white/50 transition-all duration-300
-                    ${collapsed ? "justify-center px-0" : "justify-between px-6"}`}
+                <div className={`flex h-16 items-center border-b border-slate-200/80 bg-white transition-all duration-300
+                    ${collapsed ? "justify-center px-0" : "justify-between px-5"}`}
                 >
-                    <div className="flex items-center gap-3 min-w-0">
-                        <div className="flex flex-shrink-0 h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-emerald-500 via-teal-500 to-cyan-600 text-white shadow-md shadow-emerald-200/50">
-                            <BadgeCheck className="h-5 w-5" />
+                    <div className="flex items-center gap-2.5 min-w-0">
+                        <div className="flex flex-shrink-0 h-8 w-8 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-xs">
+                            <BadgeCheck className="h-4 w-4" />
                         </div>
                         {!collapsed && (
                             <div className="overflow-hidden">
-                                <span className="block text-sm font-black text-slate-800 tracking-tight leading-tight whitespace-nowrap">
+                                <span className="block text-sm font-bold text-slate-900 tracking-tight leading-tight whitespace-nowrap">
                                     Faculty Portal
                                 </span>
-                                <span className="block text-[10px] uppercase tracking-wider text-emerald-600 font-black whitespace-nowrap">
-                                    {user?.employee_id || "Teacher"}
+                                <span className="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold whitespace-nowrap">
+                                    Teacher Suite
                                 </span>
                             </div>
                         )}
@@ -73,17 +75,17 @@ export default function TeacherSidebar({ isOpen, onClose, onCollapsedChange }) {
                     {!collapsed && (
                         <button
                             onClick={onClose}
-                            className="p-1.5 rounded-xl text-slate-400 bg-white shadow-sm border border-slate-100 hover:text-rose-500 lg:hidden transition-colors"
+                            className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 lg:hidden transition-colors"
                         >
                             <X className="w-4 h-4" />
                         </button>
                     )}
                 </div>
 
-                <div className="flex-1 overflow-y-auto py-5 space-y-1.5 px-2">
+                <div className="flex-1 overflow-y-auto py-4 space-y-1 px-2.5">
                     {!collapsed && (
-                        <div className="px-2 pb-2 text-[10px] font-black uppercase tracking-wider text-slate-400">
-                            Teaching & Workload
+                        <div className="px-3 pb-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                            Workload & Classes
                         </div>
                     )}
 
@@ -96,22 +98,22 @@ export default function TeacherSidebar({ isOpen, onClose, onCollapsedChange }) {
                                 title={collapsed ? item.name : undefined}
                                 onClick={() => { if (window.innerWidth < 1024) onClose(); }}
                                 className={({ isActive }) =>
-                                    `flex items-center rounded-2xl text-xs font-bold transition-all
-                                    ${collapsed ? "justify-center p-3" : "justify-between px-3.5 py-2.5"}
+                                    `flex items-center rounded-xl text-xs transition-all duration-150
+                                    ${collapsed ? "justify-center p-2.5" : "justify-between px-3 py-2.5"}
                                     ${isActive
-                                        ? "bg-gradient-to-r from-emerald-50 via-teal-50/50 to-cyan-50/10 text-emerald-700 shadow-sm border border-emerald-100/50"
-                                        : "text-slate-600 hover:text-emerald-600 hover:bg-slate-50 border border-transparent"
+                                        ? "bg-emerald-50 text-emerald-800 font-bold border-l-2 border-emerald-600 shadow-2xs"
+                                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-semibold"
                                     }`
                                 }
                             >
                                 {({ isActive }) => (
                                     <>
                                         <div className={`flex items-center ${collapsed ? "" : "gap-3"}`}>
-                                            <Icon className={`w-4 h-4 flex-shrink-0 transition-colors ${isActive ? "text-emerald-600" : "text-slate-400"}`} />
+                                            <Icon className={`w-4 h-4 flex-shrink-0 transition-colors ${isActive ? "text-emerald-600" : "text-slate-400 group-hover:text-slate-600"}`} />
                                             {!collapsed && <span className="whitespace-nowrap">{item.name}</span>}
                                         </div>
                                         {!collapsed && isActive && (
-                                            <span className="h-2 w-2 flex-shrink-0 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 shadow-sm" />
+                                            <span className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-emerald-600" />
                                         )}
                                     </>
                                 )}
@@ -125,10 +127,10 @@ export default function TeacherSidebar({ isOpen, onClose, onCollapsedChange }) {
                     onClick={toggleCollapse}
                     title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
                     className="hidden lg:flex absolute -right-3.5 top-1/2 -translate-y-1/2 z-50
-                        w-7 h-14 items-center justify-center
-                        bg-white border border-slate-200/80
-                        rounded-r-xl shadow-[3px_0_12px_rgba(16,185,129,0.15)]
-                        text-slate-400 hover:text-emerald-600 hover:bg-emerald-50
+                        w-7 h-12 items-center justify-center
+                        bg-white border border-slate-200/90
+                        rounded-r-xl shadow-xs
+                        text-slate-400 hover:text-slate-700 hover:bg-slate-50
                         transition-all duration-200 group"
                 >
                     {collapsed

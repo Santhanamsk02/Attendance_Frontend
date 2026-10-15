@@ -9,6 +9,7 @@ import {
     Info,
     X,
     RefreshCw,
+    BookOpen,
 } from "lucide-react";
 import useTimetable from "../../hooks/useTimetable";
 import TimetableContextSelector from "../../components/timetable/TimetableContextSelector";
@@ -333,27 +334,27 @@ export default function TimetablePage() {
                 </div>
 
                 {tt.isSectionSelected && (
-                    <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2.5">
                         <button
                             onClick={() => setShowPreview(true)}
-                            className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-slate-700 neu-btn rounded-2xl"
+                            className="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl shadow-2xs transition-all duration-150"
                         >
-                            <Eye className="w-4 h-4 text-sky-600" />
+                            <Eye className="w-4 h-4 text-slate-500" />
                             Preview
                         </button>
                         <button
                             onClick={() =>
                                 tt.isDirty ? setConfirmReset(true) : resetTimetable()
                             }
-                            className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-slate-700 neu-btn rounded-2xl"
+                            className="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl shadow-2xs transition-all duration-150"
                             title="Reset to default template"
                         >
-                            <RotateCcw className="w-4 h-4 text-sky-600" />
+                            <RotateCcw className="w-4 h-4 text-slate-500" />
                             Reset
                         </button>
                         <button
                             onClick={handleSave}
-                            className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold neu-btn-primary rounded-2xl"
+                            className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 rounded-xl shadow-xs transition-all duration-150"
                         >
                             <Save className="w-4 h-4" />
                             Save Timetable
@@ -483,8 +484,9 @@ export default function TimetablePage() {
                             {/* Subject Palette sidebar — sticky so it's always in view */}
                             <div className="w-56 xl:w-64 flex-shrink-0 sticky top-4 self-start">
                                 <div className="rounded-3xl neu-card p-4">
-                                    <h4 className="text-[11px] font-black text-slate-500 uppercase tracking-widest mb-3">
-                                        📚 Subjects · Drag to Place
+                                    <h4 className="text-[11px] font-black text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-1.5">
+                                        <BookOpen className="w-3.5 h-3.5 text-slate-400" />
+                                        Subjects · Drag to Place
                                     </h4>
                                     {/* Scrollable list — no page scroll interference with drag */}
                                     <div
