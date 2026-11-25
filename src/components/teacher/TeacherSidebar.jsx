@@ -14,7 +14,6 @@ import {
     BadgeCheck,
     ChevronLeft,
     ChevronRight,
-    Award,
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 
@@ -22,7 +21,6 @@ const NAV_ITEMS = [
     { name: "Dashboard", path: "/teacher/dashboard", icon: LayoutDashboard },
     { name: "My Timetable", path: "/teacher/timetable", icon: CalendarDays },
     { name: "Today's Classes", path: "/teacher/today", icon: CalendarClock },
-    { name: "Special Training", path: "/teacher/training-attendance", icon: Award },
     { name: "Take Attendance", path: "/teacher/attendance", icon: QrCode },
     { name: "Attendance History", path: "/teacher/attendance-history", icon: History },
     { name: "My Subjects", path: "/teacher/subjects", icon: BookOpen },

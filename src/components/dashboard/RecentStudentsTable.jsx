@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, UserCheck, UserX } from "lucide-react";
-import { formatDate } from "../../utils/formatters";
+import { formatDate, getStudentYear, getYearRoman } from "../../utils/formatters";
 
 export default function RecentStudentsTable({ students = [], isLoading = false }) {
   return (
@@ -64,7 +64,7 @@ export default function RecentStudentsTable({ students = [], isLoading = false }
                     {student.department?.name || student.department_id}
                   </td>
                   <td className="text-xs font-semibold">
-                    Sem {student.semester} - {student.section}
+                    Year {getStudentYear(student)} - {student.section}
                   </td>
                   <td>
                     {student.status === "active" ? (

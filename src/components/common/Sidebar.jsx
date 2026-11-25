@@ -19,6 +19,7 @@ import {
   TrendingUp,
   AlertOctagon,
   Award,
+  AlertTriangle,
 } from "lucide-react";
 
 const NAV_ITEMS = [
@@ -28,18 +29,19 @@ const NAV_ITEMS = [
   { name: "Teachers", path: "/teachers", icon: GraduationCap },
   { name: "Subjects", path: "/subjects", icon: BookOpen },
   { name: "Timetable", path: "/timetable", icon: CalendarDays },
-  { name: "Calendar", path: "/calendar", icon: Calendar },
   { 
-    name: "Reports", 
-    path: "/reports", 
-    icon: BarChart3,
+    name: "Attendance", 
+    path: "/attendance", 
+    icon: QrCode,
     subItems: [
-      { name: "Daily Register", path: "/reports/daily", icon: ClipboardList },
-      { name: "Student Profile", path: "/reports/student", icon: UserCircle },
-      { name: "Defaulters", path: "/reports/defaulters", icon: AlertOctagon },
-      { name: "Special Training", path: "/reports/training", icon: Award },
+      { name: "Overview", path: "/attendance/overview", icon: LayoutDashboard },
+      { name: "Regular Sessions", path: "/attendance/sessions", icon: CalendarDays },
+      { name: "Special Events Analytics", path: "/attendance/special-events-analytics", icon: Sparkles },
+      { name: "Directory", path: "/attendance/directory", icon: Users },
+      { name: "Alerts", path: "/attendance/alerts", icon: AlertTriangle },
     ]
   },
+  { name: "Calendar", path: "/calendar", icon: Calendar },
 ];
 
 

@@ -10,7 +10,9 @@ import {
     X,
     RefreshCw,
     BookOpen,
+    Sparkles,
 } from "lucide-react";
+
 import useTimetable from "../../hooks/useTimetable";
 import TimetableContextSelector from "../../components/timetable/TimetableContextSelector";
 import TimetableHeader from "../../components/timetable/TimetableHeader";
@@ -25,6 +27,7 @@ import ConfirmDialog from "../../components/common/ConfirmDialog";
 import TimetableSectionsList from "../../components/timetable/TimetableSectionsList";
 import SectionAssignmentSetup from "../../components/timetable/SectionAssignmentSetup";
 import SubjectPalette from "../../components/timetable/SubjectPalette";
+import SpecialEventsTab from "../../components/special_events/SpecialEventsTab";
 import { subjectService } from "../../services/subjectService";
 import { teacherService } from "../../services/teacherService";
 import { timetableService } from "../../services/timetableService";
@@ -37,6 +40,7 @@ export default function TimetablePage() {
     const navigate = useNavigate();
     const toast = useToast();
     const tt = useTimetable();
+    const [activeTab, setActiveTab] = useState("regular"); // "regular" | "special_events"
     const [showAssignmentStep, setShowAssignmentStep] = useState(false);
 
 
@@ -264,104 +268,150 @@ export default function TimetablePage() {
                         handleContextChange({ department: "", academic_year: "", semester: "", section: "" });
                         setShowAssignmentStep(false);
                     }}
-                    className={!tt.context.department ? "text-violet-600" : "hover:text-slate-800 cursor-pointer transition-colors"}
+                    className={!tt.context.department && activeTab === "regular" ? "text-violet-600 font-bold" : "hover:text-slate-800 cursor-pointer transition-colors"}
                 >
                     Timetable
                 </span>
 
-                {tt.context.department && (
+                {activeTab === "special_events" ? (
                     <>
                         <ChevronRight className="w-3 h-3 text-slate-300 shrink-0" />
-                        <span
-                            onClick={() => {
-                                handleContextChange({ ...tt.context, academic_year: "", semester: "", section: "" });
-                                setShowAssignmentStep(false);
-                            }}
-                            className={!tt.context.academic_year ? "text-violet-600" : "hover:text-slate-800 cursor-pointer transition-colors"}
-                        >
-                            {tt.context.department}
-                        </span>
+                        <span className="text-violet-600 font-bold">Special Events & Day-Wise Attendance</span>
                     </>
-                )}
-
-                {tt.context.academic_year && (
+                ) : (
                     <>
-                        <ChevronRight className="w-3 h-3 text-slate-300 shrink-0" />
-                        <span
-                            onClick={() => {
-                                handleContextChange({ ...tt.context, semester: "", section: "" });
-                                setShowAssignmentStep(false);
-                            }}
-                            className={!tt.context.semester ? "text-violet-600" : "hover:text-slate-800 cursor-pointer transition-colors"}
-                        >
-                            {tt.context.academic_year}
-                        </span>
-                    </>
-                )}
+                        {tt.context.department && (
+                            <>
+                                <ChevronRight className="w-3 h-3 text-slate-300 shrink-0" />
+                                <span
+                                    onClick={() => {
+                                        handleContextChange({ ...tt.context, academic_year: "", semester: "", section: "" });
+                                        setShowAssignmentStep(false);
+                                    }}
+                                    className={!tt.context.academic_year ? "text-violet-600" : "hover:text-slate-800 cursor-pointer transition-colors"}
+                                >
+                                    {tt.context.department}
+                                </span>
+                            </>
+                        )}
 
-                {tt.context.semester && (
-                    <>
-                        <ChevronRight className="w-3 h-3 text-slate-300 shrink-0" />
-                        <span
-                            onClick={() => {
-                                handleContextChange({ ...tt.context, section: "" });
-                                setShowAssignmentStep(false);
-                            }}
-                            className={!tt.context.section ? "text-violet-600" : "hover:text-slate-800 cursor-pointer transition-colors"}
-                        >
-                            Sem {tt.context.semester}
-                        </span>
-                    </>
-                )}
+                        {tt.context.academic_year && (
+                            <>
+                                <ChevronRight className="w-3 h-3 text-slate-300 shrink-0" />
+                                <span
+                                    onClick={() => {
+                                        handleContextChange({ ...tt.context, semester: "", section: "" });
+                                        setShowAssignmentStep(false);
+                                    }}
+                                    className={!tt.context.semester ? "text-violet-600" : "hover:text-slate-800 cursor-pointer transition-colors"}
+                                >
+                                    {tt.context.academic_year}
+                                </span>
+                            </>
+                        )}
 
-                {tt.context.section && (
-                    <>
-                        <ChevronRight className="w-3 h-3 text-slate-300 shrink-0" />
-                        <span className="text-violet-600">Sec {tt.context.section}</span>
+                        {tt.context.semester && (
+                            <>
+                                <ChevronRight className="w-3 h-3 text-slate-300 shrink-0" />
+                                <span
+                                    onClick={() => {
+                                        handleContextChange({ ...tt.context, section: "" });
+                                        setShowAssignmentStep(false);
+                                    }}
+                                    className={!tt.context.section ? "text-violet-600" : "hover:text-slate-800 cursor-pointer transition-colors"}
+                                >
+                                    Sem {tt.context.semester}
+                                </span>
+                            </>
+                        )}
+
+                        {tt.context.section && (
+                            <>
+                                <ChevronRight className="w-3 h-3 text-slate-300 shrink-0" />
+                                <span className="text-violet-600">Sec {tt.context.section}</span>
+                            </>
+                        )}
                     </>
                 )}
             </div>
 
-            {/* ── Page Header ────────────────────────────── */}
+            {/* ── Page Header & Tab Switcher ─────────────── */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
                     <h2 className="text-xl sm:text-2xl font-black tracking-tight text-slate-800">
-                        Timetable Management
+                        {activeTab === "special_events" ? "Special Events Management" : "Timetable Management"}
                     </h2>
                     <p className="text-xs sm:text-sm text-slate-500 mt-0.5 font-medium">
-                        Create and manage department-wise, semester-wise academic timetables.
+                        {activeTab === "special_events"
+                            ? "Configure workshops, trainings, assemblies, and record day-wise faculty attendance."
+                            : "Create and manage department-wise, semester-wise academic timetables."}
                     </p>
                 </div>
 
-                {tt.isSectionSelected && (
-                    <div className="flex flex-wrap items-center gap-2.5">
+                <div className="flex flex-wrap items-center gap-3">
+                    {/* Tab Switcher */}
+                    <div className="flex items-center gap-1.5 p-1 bg-slate-100/90 rounded-2xl w-fit border border-slate-200/80 shadow-2xs">
                         <button
-                            onClick={() => setShowPreview(true)}
-                            className="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl shadow-2xs transition-all duration-150"
+                            type="button"
+                            onClick={() => setActiveTab("regular")}
+                            className={`flex items-center gap-2 px-3.5 py-2 text-xs font-bold rounded-xl transition-all ${
+                                activeTab === "regular"
+                                    ? "bg-white text-slate-800 shadow-xs"
+                                    : "text-slate-600 hover:text-slate-900"
+                            }`}
                         >
-                            <Eye className="w-4 h-4 text-slate-500" />
-                            Preview
+                            <CalendarDays className="w-4 h-4 text-violet-600" />
+                            Regular Timetable
                         </button>
                         <button
-                            onClick={() =>
-                                tt.isDirty ? setConfirmReset(true) : resetTimetable()
-                            }
-                            className="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl shadow-2xs transition-all duration-150"
-                            title="Reset to default template"
+                            type="button"
+                            onClick={() => setActiveTab("special_events")}
+                            className={`flex items-center gap-2 px-3.5 py-2 text-xs font-bold rounded-xl transition-all ${
+                                activeTab === "special_events"
+                                    ? "bg-white text-slate-800 shadow-xs"
+                                    : "text-slate-600 hover:text-slate-900"
+                            }`}
                         >
-                            <RotateCcw className="w-4 h-4 text-slate-500" />
-                            Reset
-                        </button>
-                        <button
-                            onClick={handleSave}
-                            className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 rounded-xl shadow-xs transition-all duration-150"
-                        >
-                            <Save className="w-4 h-4" />
-                            Save Timetable
+                            <Sparkles className="w-4 h-4 text-amber-500" />
+                            Special Events
                         </button>
                     </div>
-                )}
+
+                    {activeTab === "regular" && tt.isSectionSelected && (
+                        <div className="flex flex-wrap items-center gap-2">
+                            <button
+                                onClick={() => setShowPreview(true)}
+                                className="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl shadow-2xs transition-all duration-150"
+                            >
+                                <Eye className="w-4 h-4 text-slate-500" />
+                                Preview
+                            </button>
+                            <button
+                                onClick={() =>
+                                    tt.isDirty ? setConfirmReset(true) : resetTimetable()
+                                }
+                                className="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl shadow-2xs transition-all duration-150"
+                                title="Reset to default template"
+                            >
+                                <RotateCcw className="w-4 h-4 text-slate-500" />
+                                Reset
+                            </button>
+                            <button
+                                onClick={handleSave}
+                                className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 rounded-xl shadow-xs transition-all duration-150"
+                            >
+                                <Save className="w-4 h-4" />
+                                Save Timetable
+                            </button>
+                        </div>
+                    )}
+                </div>
             </div>
+
+            {activeTab === "special_events" ? (
+                <SpecialEventsTab />
+            ) : (
+                <>
 
             {/* ── Context Selector ───────────────────────── */}
             <TimetableContextSelector
@@ -514,6 +564,8 @@ export default function TimetablePage() {
                     </div>
 
                 </>
+            )}
+            </>
             )}
 
             {/* ── Modals ─────────────────────────────────── */}

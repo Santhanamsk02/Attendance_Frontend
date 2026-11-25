@@ -112,7 +112,7 @@ export default function StudentFilters({
             <option value="">All Batches</option>
             {selectedDept?.batches?.map((b) => (
               <option key={b.id} value={b.id}>
-                {b.batch_name}
+                {b.batch_name} (Year {["I", "II", "III", "IV"][b.current_year - 1] || "IV"})
               </option>
             ))}
           </select>

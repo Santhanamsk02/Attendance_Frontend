@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, NavLink, useLocation } from 'react-router-dom';
-import { CalendarDays, LayoutDashboard, ListTodo, Users, AlertTriangle, Download } from 'lucide-react';
+import { CalendarDays, LayoutDashboard, ListTodo, Users, AlertTriangle, Download, Sparkles } from 'lucide-react';
 import { apiClient } from '../../../services/api';
 import ExportReportModal from './ExportReportModal';
 
@@ -33,7 +33,8 @@ export default function AdminAttendanceLayout() {
 
     const tabs = [
         { name: 'Overview', path: 'overview', icon: LayoutDashboard },
-        { name: 'Sessions', path: 'sessions', icon: CalendarDays },
+        { name: 'Regular Sessions', path: 'sessions', icon: CalendarDays },
+        { name: 'Special Events Analytics', path: 'special-events-analytics', icon: Sparkles },
         { name: 'Directory', path: 'directory', icon: Users },
         { name: 'Alerts', path: 'alerts', icon: AlertTriangle }
     ];

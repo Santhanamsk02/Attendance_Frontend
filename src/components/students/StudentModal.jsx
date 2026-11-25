@@ -138,8 +138,8 @@ export default function StudentModal({
       roll_no: formData.roll_no.trim().toUpperCase(),
       name: formData.name.trim(),
       section: formData.section.trim().toUpperCase(),
-      email: formData.email ? formData.email.trim().toLowerCase() : null,
-      phone: formData.phone ? formData.phone.trim() : null,
+      email: formData.email?.trim() ? formData.email.trim().toLowerCase() : null,
+      phone: formData.phone?.trim() ? formData.phone.trim() : null,
       semester: selectedBatch ? selectedBatch.current_semester : formData.semester,
       academic_year: selectedBatch ? selectedBatch.batch_name : formData.academic_year,
     };
@@ -215,14 +215,14 @@ export default function StudentModal({
           {/* Email */}
           <div>
             <label className="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1">
-              Email Address
+              Email Address <span className="text-slate-400 font-normal lowercase">(optional)</span>
             </label>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              placeholder="student@example.com"
+              placeholder="student@example.com (optional)"
               disabled={isLoading}
               className={`w-full rounded-2xl neu-input px-3.5 py-2.5 text-sm font-medium focus:outline-none ${errors.email ? "border-rose-400 focus:ring-rose-200" : ""
                 }`}
@@ -235,14 +235,14 @@ export default function StudentModal({
           {/* Phone */}
           <div>
             <label className="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1">
-              Phone Number
+              Phone Number <span className="text-slate-400 font-normal lowercase">(optional)</span>
             </label>
             <input
               type="tel"
               name="phone"
               value={formData.phone}
               onChange={handleChange}
-              placeholder="+91 9876543210"
+              placeholder="+91 9876543210 (optional)"
               disabled={isLoading}
               className="w-full rounded-2xl neu-input px-3.5 py-2.5 text-sm font-medium focus:outline-none"
             />
@@ -301,7 +301,7 @@ export default function StudentModal({
               <option value="">Select Batch...</option>
               {selectedDept?.batches?.map((yr) => (
                 <option key={yr.id} value={yr.id}>
-                  {yr.batch_name}
+                  {yr.batch_name} (Year {["I", "II", "III", "IV"][yr.current_year - 1] || "IV"})
                 </option>
               ))}
             </select>

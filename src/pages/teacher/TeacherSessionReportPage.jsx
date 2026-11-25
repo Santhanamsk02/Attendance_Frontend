@@ -31,25 +31,84 @@ export default function TeacherSessionReportPage() {
         fetchReport();
     }, [sessionId]);
 
-    const handleExportExcel = () => {
+    const handleExportExcel = async () => {
         if (!reportData) return;
 
-        const wsData = [
-            ["Roll Number", "Student Name", "Status", "Time", "Method"]
-        ];
+        try {
+            const token = sessionStorage.getItem('teacher_verification_token');
+            const res = await apiClient.get(`/attendance/sessions/${sessionId}/export-excel`, {
+                headers: { "teacher-verification-token": token },
+                responseType: 'blob'
+            });
 
-        reportData.students.forEach(st => {
-            wsData.push([st.roll_number, st.name, st.status, st.time || "-", st.method || "-"]);
-        });
+            const cleanSubj = (reportData.subject || "Report").replace(/[^\w\.-]/g, '_');
+            const cleanSec = (reportData.section || "All").replace(/[^\w\.-]/g, '_');
+            const fileName = `${cleanSubj}_${cleanSec}_Attendance_${reportData.date}.xlsx`;
 
-        const ws = XLSX.utils.aoa_to_sheet(wsData);
-        ws['!cols'] = [{ wch: 15 }, { wch: 30 }, { wch: 15 }, { wch: 15 }, { wch: 20 }];
+            const url = window.URL.createObjectURL(new Blob([res.data], {
+                type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            }));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', fileName);
+            document.body.appendChild(link);
+            link.click();
+            link.parentNode.removeChild(link);
+            window.URL.revokeObjectURL(url);
+        } catch (err) {
+            console.error("Failed to download backend excel, falling back to local export", err);
+            // Fallback to structured client-side export
+            const wsData = [
+                ["COLLEGE ATTENDANCE MANAGEMENT SYSTEM"],
+                ["DAY-WISE ATTENDANCE SESSION REPORT"],
+                [],
+                ["Subject / Event:", reportData.subject, "", "", "Date:", reportData.date],
+                ["Course Code:", reportData.code, "", "", "Section:", reportData.section],
+                ["Faculty / Marked By:", (reportData.marked_teachers || []).join(", ") || "-", "", "", "Period:", reportData.period || "-"],
+                [],
+                [
+                    `Total Enrolled: ${reportData.students.length}`,
+                    `Total Present: ${reportData.students.filter(s => s.status === 'Present').length}`,
+                    `Total Absent: ${reportData.students.filter(s => s.status !== 'Present').length}`
+                ],
+                [],
+                ["S.No", "Roll Number", "Student Name", "Department", "Section", "Status", "Marked Time", "Method", "Marked By"]
+            ];
 
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Attendance Report");
+            reportData.students.forEach((st, idx) => {
+                wsData.push([
+                    idx + 1,
+                    st.roll_number,
+                    st.name,
+                    st.department || "-",
+                    st.section || "-",
+                    st.status,
+                    st.time || "-",
+                    st.method || "-",
+                    st.marked_by || "-"
+                ]);
+            });
 
-        const fileName = `${reportData.code}_${reportData.section.replace(/\s+/g, '')}_Attendance_${reportData.date}.xlsx`;
-        XLSX.writeFile(wb, fileName);
+            const ws = XLSX.utils.aoa_to_sheet(wsData);
+            ws['!cols'] = [
+                { wch: 8 },
+                { wch: 18 },
+                { wch: 30 },
+                { wch: 20 },
+                { wch: 12 },
+                { wch: 14 },
+                { wch: 16 },
+                { wch: 18 },
+                { wch: 25 }
+            ];
+
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Attendance Report");
+            const cleanSubj = (reportData.subject || "Report").replace(/[^\w\.-]/g, '_');
+            const cleanSec = (reportData.section || "All").replace(/[^\w\.-]/g, '_');
+            const fileName = `${cleanSubj}_${cleanSec}_Attendance_${reportData.date}.xlsx`;
+            XLSX.writeFile(wb, fileName);
+        }
     };
 
     if (loadingReport) {

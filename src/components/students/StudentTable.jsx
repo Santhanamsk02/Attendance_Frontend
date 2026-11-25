@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from "react";
 import { Edit2, Trash2, UserCheck, UserX, Mail, Phone } from "lucide-react";
 import TableSkeleton from "../common/TableSkeleton";
 import EmptyState from "../common/EmptyState";
-import { getDepartmentShort } from "../../utils/formatters";
+import { getDepartmentShort, getStudentYear, getYearRoman } from "../../utils/formatters";
 
 export default function StudentTable({
   students = [],
@@ -72,7 +72,7 @@ export default function StudentTable({
               <th>Student Name</th>
               <th>Contact Details</th>
               <th>Department</th>
-              <th>Sem / Sec</th>
+              <th>Year / Sec</th>
               <th>Academic Year</th>
               <th>Status</th>
               <th className="text-right">Actions</th>
@@ -161,10 +161,10 @@ export default function StudentTable({
                     </span>
                   </td>
 
-                  {/* Semester & Section */}
+                  {/* Year & Section */}
                   <td>
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200/70">
-                      S{student.semester} - {student.section}
+                      Year {getStudentYear(student)} - {student.section}
                     </span>
                   </td>
 

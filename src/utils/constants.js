@@ -10,6 +10,13 @@ export const DEPARTMENTS = [
 
 export const SEMESTERS = [1, 2, 3, 4, 5, 6, 7, 8];
 
+export const ACADEMIC_YEAR_ROMANS = [
+  { value: 1, label: "Year I", roman: "I" },
+  { value: 2, label: "Year II", roman: "II" },
+  { value: 3, label: "Year III", roman: "III" },
+  { value: 4, label: "Year IV", roman: "IV" },
+];
+
 // 4-year degree cohort batches
 export const ACADEMIC_YEARS = [
   "2023-2027",

@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import { apiClient } from "../../../services/api";
 import { reportsService, downloadBlob } from "../../../services/reportsService";
 import { Download, AlertTriangle, ChevronLeft, ChevronRight, Search, Filter, RotateCcw, CheckCircle } from "lucide-react";
+import { getYearRoman } from "../../../utils/formatters";
 
 export default function DefaultersReport() {
   const [threshold, setThreshold] = useState("");
@@ -325,7 +326,7 @@ export default function DefaultersReport() {
                   {visibleColumns.rollNo && <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wide whitespace-nowrap">Roll No</th>}
                   {visibleColumns.name && <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wide whitespace-nowrap">Name</th>}
                   {visibleColumns.section && <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wide whitespace-nowrap">Section</th>}
-                  {visibleColumns.sem && <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wide whitespace-nowrap">Sem</th>}
+                  {visibleColumns.sem && <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wide whitespace-nowrap">Year</th>}
                   {visibleColumns.emailPhone && <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wide whitespace-nowrap">Email / Phone</th>}
                   {visibleColumns.present && <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wide whitespace-nowrap">Present</th>}
                   {visibleColumns.workingDays && <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wide whitespace-nowrap">Working Days</th>}
@@ -347,7 +348,7 @@ export default function DefaultersReport() {
                     {visibleColumns.rollNo && <td className="px-6 py-4 font-mono text-xs">{s.roll_no}</td>}
                     {visibleColumns.name && <td className="px-6 py-4 font-bold text-slate-800 text-sm">{s.name}</td>}
                     {visibleColumns.section && <td className="px-6 py-4 font-semibold text-slate-600">{s.section}</td>}
-                    {visibleColumns.sem && <td className="px-6 py-4 text-sm text-slate-600">{s.semester}</td>}
+                    {visibleColumns.sem && <td className="px-6 py-4 text-sm text-slate-600">Year {getYearRoman(s.semester)}</td>}
                     {visibleColumns.emailPhone && <td className="px-6 py-4 text-xs">
                       <div className="font-medium text-slate-700">{s.email}</div>
                       <div className="text-slate-400 mt-0.5">{s.phone}</div>

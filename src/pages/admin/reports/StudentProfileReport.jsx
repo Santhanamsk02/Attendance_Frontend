@@ -5,6 +5,7 @@ import { Search, Printer, Filter, RotateCcw, ChevronLeft, ChevronRight } from "l
 import StudentDayAnalysisModal from "./StudentDayAnalysisModal";
 import Pagination from "../../../components/common/Pagination";
 import { useDebounce } from "../../../hooks/useDebounce";
+import { getYearRoman } from "../../../utils/formatters";
 
 // ─── Heatmap Calendar ────────────────────────────────────────────────────────
 function HeatmapCalendar({ heatmap, onDateClick }) {
@@ -446,7 +447,7 @@ export default function StudentProfileReport() {
                 <div>
                   <h2 className="text-lg font-bold text-slate-800">{reportData.student.name}</h2>
                   <p className="text-sm text-slate-500">
-                    {reportData.student.roll_no} · Section {reportData.student.section} · Semester {reportData.student.semester}
+                    {reportData.student.roll_no} · Year {getYearRoman(reportData.student.semester)} · Section {reportData.student.section}
                   </p>
                 </div>
                 <button

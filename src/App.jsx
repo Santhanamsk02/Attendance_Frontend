@@ -20,6 +20,7 @@ import AdminAttendanceSessions from "./pages/admin/attendance/AdminAttendanceSes
 import AdminAttendanceAlerts from "./pages/admin/attendance/AdminAttendanceAlerts";
 import StudentAttendanceDirectory from "./pages/admin/attendance/StudentAttendanceDirectory";
 import StudentAttendanceDetail from "./pages/admin/attendance/StudentAttendanceDetail";
+import SpecialEventsAnalyticsPage from "./pages/admin/attendance/SpecialEventsAnalyticsPage";
 import StudentsPage from "./pages/students/StudentsPage";
 import TeachersPage from "./pages/teachers/TeachersPage";
 import SubjectsPage from "./pages/subjects/SubjectsPage";
@@ -33,9 +34,6 @@ import DailyRegisterReport from "./pages/admin/reports/DailyRegisterReport";
 import StudentProfileReport from "./pages/admin/reports/StudentProfileReport";
 import TrendsAnalyticsReport from "./pages/admin/reports/TrendsAnalyticsReport";
 import DefaultersReport from "./pages/admin/reports/DefaultersReport";
-import SpecialTrainingReportsPage from "./pages/admin/reports/SpecialTrainingReportsPage";
-import TrainingAttendancePage from "./pages/teacher/TrainingAttendancePage";
-
 
 import { ToastProvider } from "./context/ToastContext";
 import { AuthProvider } from "./context/AuthContext";
@@ -98,6 +96,7 @@ export default function App() {
                   <Route index element={<Navigate to="overview" replace />} />
                   <Route path="overview" element={<AdminAttendanceOverview />} />
                   <Route path="sessions" element={<AdminAttendanceSessions />} />
+                  <Route path="special-events-analytics" element={<SpecialEventsAnalyticsPage />} />
                   <Route path="alerts" element={<AdminAttendanceAlerts />} />
                   <Route path="directory" element={<StudentAttendanceDirectory />} />
                   <Route path="student/:studentId" element={<StudentAttendanceDetail />} />
@@ -109,7 +108,6 @@ export default function App() {
                   <Route path="student" element={<StudentProfileReport />} />
                   <Route path="trends" element={<TrendsAnalyticsReport />} />
                   <Route path="defaulters" element={<DefaultersReport />} />
-                  <Route path="training" element={<SpecialTrainingReportsPage />} />
                 </Route>
                 <Route path="institution" element={<InstitutionSetupPage />} />
               </Route>
@@ -122,7 +120,6 @@ export default function App() {
                 <Route path="dashboard" element={<TeacherDashboardPage />} />
                 <Route path="timetable" element={<TeacherTimetablePage />} />
                 <Route path="today" element={<TeacherTodayClassesPage />} />
-                <Route path="training-attendance" element={<TrainingAttendancePage />} />
                 <Route path="attendance" element={<AttendanceRegistryPage />} />
                 <Route path="attendance-history" element={<TeacherAttendanceHistoryPage />} />
                 <Route path="history/session/:sessionId" element={<TeacherSessionReportPage />} />
